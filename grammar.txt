@@ -1,0 +1,81 @@
+JSON grammar transcribed from www.json.org/json-en.html
+
+json ->         element
+
+value ->        object
+                | array
+                | string
+                | number
+                | "true" (I'm allowing capitalization of the booleans and null)
+                | "false"
+                | "null"
+
+object ->       '{' ws '}'
+                | '{' ws members ws '}'
+
+members ->      member
+                | member ',' members
+
+member ->       ws member ws ':' element
+
+array ->        '[' ws ']'
+                | '[' elements ']'
+
+elements ->     element
+                | element ',' elements
+
+element ->      ws value ws
+
+string ->       '"' characters '"'
+
+characters ->   ""
+                | character characters
+
+character ->    '0020' . '10FFFF' - '"' - '\'
+                | '\' escape
+
+escape ->       '"'
+                | '\'
+                | '/'
+                | 'b'
+                | 'f'
+                | 'n'
+                | 'r'
+                | 't'
+                | 'u' hex hex hex hex
+
+hex ->          digit
+                | 'a' . 'f'
+                | 'A' . 'F'
+
+number ->       integer fraction exponent
+
+integer ->      digit
+                | onenine digits
+                | '-' digit
+                | '-' onenine digits
+
+digits ->       digit
+                | digit digits
+
+digit ->        '0'
+                | onenine
+
+onenine ->      '1' . '9'
+
+fraction ->     ""
+                | '.' digits
+
+exponent ->     ""
+                | 'e' sign digits
+                | 'E' sign digits
+
+sign ->         ""
+                | '+'
+                | '-'
+
+ws ->           ""
+                | '0020' ws
+                | '000A' ws
+                | '000D' ws
+                | '0009' ws

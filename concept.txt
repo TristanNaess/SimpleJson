@@ -1,0 +1,27 @@
+-- JSON parsing method --
+
+Depending on header, Json::Json is an object in memory or a wrapper around a string to be parsed
+Tradeoff between access time and creation time
+Only memory object is verified for correctness at parse
+
+Fields can be extracted from an array with  Json::Json::get<type>(index)
+Fields can be extracted from an object with Json::Json::get<type("key")
+Both will throw an error if the index/key is invalid
+
+I would like the type to be implied from the destination variable type if possible, otherwise [] operator will have to be replaced by .get()
+
+
+Ideal Usage:
+
+std::string buffer;
+std::getline(file, buffer);
+
+Json::Json json{buffer};
+
+std::string name = json.get<std::string>("name");
+int age = json.get<int>("age");
+const std::vector<std::string>& hobbies = json.get<std::string>("hobbies");
+std::unordered_map& data = json.get<unordered_map>("data"); // sub-types can only be returned by reference or const reference
+
+Json::Type t = json.typeof("hobbies");
+assert(t == Json::Type::Array);
