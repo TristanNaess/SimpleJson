@@ -4,12 +4,20 @@ Depending on header, Json::Json is an object in memory or a wrapper around a str
 Tradeoff between access time and creation time
 Only memory object is verified for correctness at parse
 
-Fields can be extracted from an array with  Json::Json::get<type>(index)
-Fields can be extracted from an object with Json::Json::get<type("key")
-Both will throw an error if the index/key is invalid
+TO BE DECIDED:
+Either const access through copy of parsed data, or through accessor object
+All non-const access must be through accessor, so written data can be transformed to in-string format and inserted where necessary
 
-I would like the type to be implied from the destination variable type if possible, otherwise [] operator will have to be replaced by .get()
+Accessors are non-copyable and non-assignable (r-value ref only, I think is the term?)
 
+Accessors will probably have to use an operator or function to access, need to check available overloads
+May be able to use a cast operator to convert for const to convert data from string format
+Probably won't work for assigning value
+Would like to be able to say json.get<std::string>("field") = "foobar"; and have the accessor convert from string literal to internal representation
+
+It would be nice to allow for iterator access to const json data, but that would require a separate class
+The issue is that the string storage method can't guarantee that references into the structure aren't invalidated by adding/removing/modifying other fields
+Would allow for more convenient access if data is read only
 
 Ideal Usage:
 
@@ -20,8 +28,5 @@ Json::Json json{buffer};
 
 std::string name = json.get<std::string>("name");
 int age = json.get<int>("age");
-const std::vector<std::string>& hobbies = json.get<std::string>("hobbies");
-std::unordered_map& data = json.get<unordered_map>("data"); // sub-types can only be returned by reference or const reference
 
-Json::Type t = json.typeof("hobbies");
-assert(t == Json::Type::Array);
+assert(json.typeof("hobbies") == Json::Type::Array);
