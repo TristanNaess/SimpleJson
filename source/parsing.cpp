@@ -1,5 +1,5 @@
 #include "parsing.hpp"
-
+#include "error.hpp"
 
 std::size_t match_quote(const std::string& line, std::size_t index)
 {
