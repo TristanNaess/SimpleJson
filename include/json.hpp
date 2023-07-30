@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace Json
+namespace json
 {
     enum class Type
     {

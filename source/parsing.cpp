@@ -3,8 +3,8 @@
 
 std::size_t match_quote(const std::string& line, std::size_t index)
 {
-    if (index > line.size()) throw Json::parsing_error("Index argument provided is outside the string");
-    if (line[index] != '"') throw Json::parsing_error("No quote at index provided in argument");
+    if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
+    if (line[index] != '"') throw json::parsing_error("No quote at index provided in argument");
     index++;
     while (index < line.size())
     {
@@ -19,12 +19,12 @@ std::size_t match_quote(const std::string& line, std::size_t index)
         }
         index++;
     }
-    throw Json::parsing_error("No matching quote located before end of string");
+    throw json::parsing_error("No matching quote located");
 }
 
 std::size_t match_bracket(const std::string& line, std::size_t index)
 {
-    if (index > line.size()) throw Json::parsing_error("Index argument provided is outside the string");
+    if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
     char open_bracket = line[index];
     char close_bracket;
     switch (open_bracket)
@@ -36,18 +36,20 @@ std::size_t match_bracket(const std::string& line, std::size_t index)
             close_bracket = ']';
             break;
         default:
-            throw Json::parsing_error("Character at index is not a bracket");
+            throw json::parsing_error("Character at index is not a bracket");
     }
 
+    index++;
     std::size_t depth = 1;
     while (index < line.size())
     {
-        // can't use switch for non-literal types
-        if (line[index] == open_bracket) { depth++; continue; }
+        // can't use switch for non-literal comparison
+        if (line[index] == open_bracket) { depth++; index++; continue; }
         if (line[index] == close_bracket)
         {
             depth--;
             if (depth == 0) return index;
+            index++;
             continue;
         }
         if (line[index] == '"') // skip internal strings to avoid non-syntax brackets
@@ -56,11 +58,12 @@ std::size_t match_bracket(const std::string& line, std::size_t index)
             {
                 index = match_quote(line, index);
             }
-            catch (const Json::parsing_error& e)
+            catch (const json::parsing_error& e)
             {
-                throw Json::parsing_error(std::string("Error while matching bracket: ") + e.what());
+                throw json::parsing_error(std::string("Error while matching bracket: ") + e.what());
             }
         }
+        index++;
     }
-    throw Json::parsing_error("No matching bracket located before end of string");
+    throw json::parsing_error("No matching bracket located");
 }

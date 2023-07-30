@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-namespace Json
+namespace json
 {
     class parsing_error : public std::runtime_error
     {

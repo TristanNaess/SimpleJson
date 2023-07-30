@@ -6,9 +6,9 @@ TEST(ErrorTesting, ErrorIsJsonParsingError)
 {
     try
     {
-        throw Json::parsing_error("This is a parsing error");
+        throw json::parsing_error("This is a parsing error");
     }
-    catch (const Json::parsing_error& pe)
+    catch (const json::parsing_error& pe)
     {
         SUCCEED();
         return;
@@ -26,9 +26,9 @@ TEST(ErrorTesting, MessageMatchesExpected)
 {
     try
     {
-        throw Json::parsing_error("This is a parsing error");
+        throw json::parsing_error("This is a parsing error");
     }
-    catch (const Json::parsing_error& pe)
+    catch (const json::parsing_error& pe)
     {
         EXPECT_STREQ(pe.what(), "This is a parsing error") << "Error message did not match expected";
     }
