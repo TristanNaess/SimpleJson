@@ -1,6 +1,6 @@
 -- JSON parsing method --
 
-Depending on header, Json::Json is an object in memory or a wrapper around a string to be parsed
+Depending on header, json::Json is an object in memory or a wrapper around a string to be parsed
 Tradeoff between access time and creation time
 Only memory object is verified for correctness at parse
 
@@ -24,9 +24,14 @@ Ideal Usage:
 std::string buffer;
 std::getline(file, buffer);
 
-Json::Json json{buffer};
+json::Json json{buffer};
 
 std::string name = json.get<std::string>("name");
 int age = json.get<int>("age");
 
-assert(json.typeof("hobbies") == Json::Type::Array);
+assert(json.typeof("hobbies") == json::Type::Array);
+
+
+
+Example Json string:
+{"Name": "John Smith", "Id": 45917, "Array Field": [1.234, "Hello World", false]}

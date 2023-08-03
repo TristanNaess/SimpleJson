@@ -19,7 +19,6 @@ std::size_t match_bracket(const std::string& line, std::size_t index) const;
 // throws if no whole field after index
 std::pair<std::size_t, std::size_t> next_field(const std::string& line, std::size_t index) const;
 
-
 // Possibly want to add functions for finding the start of the next field in object or array
 
 #endif//__PARSING_HPP__
