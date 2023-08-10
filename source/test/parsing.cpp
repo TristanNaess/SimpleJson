@@ -178,3 +178,41 @@ TEST(MatchBracket, FailsIfNoMatchingBracket)
         FAIL() << "Incorrect error type thrown by match_bracket(nested_brackets)";
     }
 }
+
+
+// --------------------------------------
+// Tests for match_bracket()
+// --------------------------------------
+
+TEST(FindUnquoted, WorksOnGoodString)
+{
+    std::string simple_string = "This string does not contain quotes.";
+    std::string quoted_string = "This \"String\" contains quotes";
+
+    EXPECT_EQ(find_unquoted(simple_string, 'n'), 9) << "Failed to locate 'n' at index 9";
+    EXPECT_EQ(find_unquoted(simple_string, 'n', 10), 17) << "Failed to locate 'n' at index 17, starting from index 10";
+    EXPECT_EQ(find_unquoted(simple_string, 'z'), std::string::npos) << "Failed to return std::string::npos when looking for non-existent 'z'";
+
+    EXPECT_EQ(find_unquoted(quoted_string, 't'), 17) << "Failed to locate 't' at index 17, skipping 't' in quotes at 7";
+    EXPECT_EQ(find_unquoted(quoted_string, 'i', 3), 19) << "Failed to locate 'i' at index 19, starting at index 3, skipping 'i' in quotes at 8";
+    EXPECT_EQ(find_unquoted(quoted_string, 'S'), std::string::npos) << "Failed to return std::string::npos when looking for 'S', which only occurs in quotes";
+}
+
+TEST(FindUnquoted, FailsWhenQuotesUnmatched)
+{
+    std::string unmatched_quote = "This \"String contains unmatched quotes.";
+
+    try
+    {
+        find_unquoted(unmatched_quote, 'a');
+        FAIL() << "find_unquoted() failed to throw when passed a string with unmatched quotes";
+    }
+    catch (const json::parsing_error& pe)
+    {
+        EXPECT_STREQ(pe.what(), "Error finding character in string: No matching quote located") << "find_unquoted(unmatched_quote) failed to throw with expected message: \"Error finding character in string: No matching quote located\"";
+    }
+    catch (...)
+    {
+        FAIL() << "Incorrect error type thrown by find_unquoted(unmatched_quotes)";
+    }
+}

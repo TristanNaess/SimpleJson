@@ -3,6 +3,7 @@
 
 #include <string>
 #include <string_view> // c++17
+#include <vector>
 
 namespace json
 {

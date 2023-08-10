@@ -1,7 +1,7 @@
 #include "parsing.hpp"
 #include "error.hpp"
 
-std::size_t match_quote(const std::string& line, std::size_t index) const
+std::size_t match_quote(const std::string& line, std::size_t index)
 {
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
     if (line[index] != '"') throw json::parsing_error("No quote at index provided in argument");
@@ -22,7 +22,7 @@ std::size_t match_quote(const std::string& line, std::size_t index) const
     throw json::parsing_error("No matching quote located");
 }
 
-std::size_t match_bracket(const std::string& line, std::size_t index) const
+std::size_t match_bracket(const std::string& line, std::size_t index)
 {
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
     char open_bracket = line[index];
@@ -52,6 +52,7 @@ std::size_t match_bracket(const std::string& line, std::size_t index) const
             index++;
             continue;
         }
+        // I could rewrite this with find_unquoted(), but ehh...
         if (line[index] == '"') // skip internal strings to avoid non-syntax brackets
         {
             try
@@ -66,4 +67,25 @@ std::size_t match_bracket(const std::string& line, std::size_t index) const
         index++;
     }
     throw json::parsing_error("No matching bracket located");
+}
+
+std::size_t find_unquoted(const std::string& line, char character, std::size_t index)
+{
+    while (index < line.size())
+    {
+        if (line[index] == character) return index;
+        if (line[index] == '"') // if looking for " will return location rather than skipping
+        {
+            try
+            {
+                index = match_quote(line, index);
+            }
+            catch (const json::parsing_error& e)
+            {
+                throw json::parsing_error(std::string("Error finding character in string: ") + e.what());
+            }
+        }
+        index++;
+    }
+    return std::string::npos;
 }
