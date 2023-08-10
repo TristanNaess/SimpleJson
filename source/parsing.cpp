@@ -89,3 +89,82 @@ std::size_t find_unquoted(const std::string& line, char character, std::size_t i
     }
     return std::string::npos;
 }
+
+std::pair<std::size_t, std::size_t> next_field(const std::string& line, std::size_t index)
+{
+    if (index > line.size()) throw json::parsing_error("Index provided is outside the string");
+    
+    std::size_t start = std::string::npos;
+
+    // locate ',' that is not inside quotes or brackets/braces
+    while (index < line.size() && start == std::string::npos)
+    {
+        switch (line[index])
+        {
+            case ',':
+                index++; // first character of field, not the comma
+                start = index;
+                break;
+            case '"':
+                try
+                {
+                    index = match_quote(line, index);
+                }
+                catch (const json::parsing_error& pe)
+                {
+                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
+                }
+                break;
+            case '[':
+            case '{':
+                try
+                {
+                    index = match_bracket(line, index);
+                }
+                catch (const json::parsing_error& pe)
+                {
+                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
+                }
+                break;
+            default:
+        }
+        index++;
+    }
+
+    // no comma located
+    if (start == std::string::npos) return std::make_pair(start, std::string::npos);
+
+    // locate second comma
+    while (index < line.size() && end == std::string::npos)
+    {
+        switch (line[index])
+        {
+            case ',':
+                return std::make_pair(start, index);
+                break;
+            case '"':
+                try
+                {
+                    index = match_quote(line, index);
+                }
+                catch (const json::parsing_error& pe)
+                {
+                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
+                }
+                break;
+            case '[':
+            case '{':
+                try
+                {
+                    index = match_bracket(line, index);
+                }
+                catch (const json::parsing_error& pe)
+                {
+                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
+                }
+                break;
+            default:
+        }
+        index++;
+    }
+}

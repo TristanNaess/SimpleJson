@@ -23,7 +23,10 @@ std::size_t match_bracket(const std::string& line, std::size_t index);
 std::size_t find_unquoted(const std::string& line, char character, std::size_t index = 0);
 
 // find beginning and end of next field, searching from index to end
-// throws if no whole field after index
+// Field indices are: "Key 1": "Value 1", "Key 2": [1, 2, 3, 4, 5], "Key 3": false
+//                                       ^                        ^
+// Maybe add chomp call internally rather than leave un-chomped?
+// returns <npos, npos> if index is within the final field
 std::pair<std::size_t, std::size_t> next_field(const std::string& line, std::size_t index);
 
 // Possibly want to add functions for finding the start of the next field in object or array
