@@ -25,6 +25,8 @@ namespace json
             
             // for now use a separate getter for each type
             // all throw if wrong type, bad key or bad index
+            // throw json::out_of_range for bad key or index
+            // throw json::wrong_type if the type requested was incorrect
 
             // later change to templated version so:
             //    Number can convert to any numeric, flooring if necessary
@@ -52,11 +54,14 @@ namespace json
             // ModifyingAccessorType getBool(std::string_view key) const;
             // ModifyingAccessorType getBool(std::size_t index) const;
 
-            bool isNull(std::string_view key) const;
-            bool isNull(std::size_t index) const;
+            // Type get_type(std::string_view key) const;
+            // Type get_type(std::size_t index) const;
 
-            bool containsKey(std::string_view key) const;
-            std::vector<std::string> getKeys() const;
+            bool is_null(std::string_view key) const;
+            bool is_null(std::size_t index) const;
+
+            bool contains_key(std::string_view key) const;
+            std::vector<std::string> get_keys() const;
             std::size_t size() const;
 
         private:

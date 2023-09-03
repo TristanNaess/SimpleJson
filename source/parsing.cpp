@@ -1,6 +1,9 @@
 #include "parsing.hpp"
 #include "error.hpp"
 
+
+// When it would affect the parsing, it is assumed that all whitespace not in strings has been removed before parsing
+
 std::size_t match_quote(const std::string& line, std::size_t index)
 {
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
@@ -90,81 +93,55 @@ std::size_t find_unquoted(const std::string& line, char character, std::size_t i
     return std::string::npos;
 }
 
+std::string remove_whitespace(const std::string& line)
+{
+    std::string result;
+    result.reserve(line.size());
+    std::size_t itr = 0;
+    std::size_t temp;
+    while (itr < line.size())
+    {
+        switch (line[itr])
+        {
+            case ' ':
+            case '\n':
+            case '\r':
+            case '\t':
+                itr++;
+                break;
+            case '"':
+                temp = itr;
+                itr = match_quote(line, itr) + 1;
+                result += line.substr(temp, itr-temp);
+                break;
+            default:
+                result += line[itr];
+                itr++;
+        }
+    }
+    result.shrink_to_fit();
+    return result;
+}
+
+//{"Key 1":"Value 1","Key 2":[1,2,3,4,5],"Key, third":false}
+
+// PROBLEM: Can't find first field, need to be able to handle case with or without initial curly brace
+/*
 std::pair<std::size_t, std::size_t> next_field(const std::string& line, std::size_t index)
 {
     if (index > line.size()) throw json::parsing_error("Index provided is outside the string");
-    
+
     std::size_t start = std::string::npos;
 
-    // locate ',' that is not inside quotes or brackets/braces
-    while (index < line.size() && start == std::string::npos)
+    if (index == 0) // either already at start or need to skip initial curly brace
     {
-        switch (line[index])
-        {
-            case ',':
-                index++; // first character of field, not the comma
-                start = index;
-                break;
-            case '"':
-                try
-                {
-                    index = match_quote(line, index);
-                }
-                catch (const json::parsing_error& pe)
-                {
-                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
-                }
-                break;
-            case '[':
-            case '{':
-                try
-                {
-                    index = match_bracket(line, index);
-                }
-                catch (const json::parsing_error& pe)
-                {
-                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
-                }
-                break;
-            default:
-        }
-        index++;
+        if start = (line[0] == '{');
+    }
+    else
+    {
+         // find next comma and assign next character to start
     }
 
-    // no comma located
-    if (start == std::string::npos) return std::make_pair(start, std::string::npos);
-
-    // locate second comma
-    while (index < line.size() && end == std::string::npos)
-    {
-        switch (line[index])
-        {
-            case ',':
-                return std::make_pair(start, index);
-                break;
-            case '"':
-                try
-                {
-                    index = match_quote(line, index);
-                }
-                catch (const json::parsing_error& pe)
-                {
-                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
-                }
-                break;
-            case '[':
-            case '{':
-                try
-                {
-                    index = match_bracket(line, index);
-                }
-                catch (const json::parsing_error& pe)
-                {
-                    throw json::parsing_error(std::string("Error while finding field: ") + pe.what());
-                }
-                break;
-            default:
-        }
-        index++;
-    }
+    // find following comma and return <start, index>
 }
+*/

@@ -216,3 +216,29 @@ TEST(FindUnquoted, FailsWhenQuotesUnmatched)
         FAIL() << "Incorrect error type thrown by find_unquoted(unmatched_quotes)";
     }
 }
+
+// --------------------------------------
+// Tests for remove_whitespace
+// --------------------------------------
+
+TEST(RemoveWhitespace, WorksForGoodData)
+{
+    std::string basic_json = R"({"Key 1": "Value 1", "Key 2": {"Key 2.1": true, "Key 2.2": 12345}, "Key 3": [1, 2, 3, 4, 5]})";
+    std::string tree_formatted = "{\n\t\"Key 1\": \"Value 1\",\n\t\"Key 2\": {\n\t\t\"Key 2.1\": true,\n\t\t\"Key 2.2\": 12345\n\t},\n\t\"Key 3\": [\n\t\t1,\n\t\t2,\n\t\t3,\n\t\t4,\n\t\t5\n\t]\n}";
+    std::string expected = R"({"Key 1":"Value 1","Key 2":{"Key 2.1":true,"Key 2.2":12345},"Key 3":[1,2,3,4,5]})";
+
+    EXPECT_EQ(remove_whitespace(basic_json), expected) << "Failed to remove spaces from JSON with spaces for readability";
+    EXPECT_EQ(remove_whitespace(tree_formatted), expected) << "Failed to remove spaces from JSON formatted as a tree";
+}
+
+// Undefined behavior for improperly formatted data. This is fine
+
+// --------------------------------------
+// Tests for next_field
+// --------------------------------------
+/*
+TEST(NextField, WorksWhenUsedProperly)
+{
+    std::string good_json = R"({"key 1:"value 1","key 2":[1,2,3,4,5],"key, third":false})";
+}
+*/
