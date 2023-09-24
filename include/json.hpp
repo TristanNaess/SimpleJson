@@ -67,6 +67,15 @@ namespace json
         private:
             std::string m_contents;
             Type m_type;
+            
+            // holds locations of keys and values for faster reference
+            // changes made to entries earlier in the string invalidate later entries
+            struct Entry
+            {
+                std::string_view key, value;
+                bool valid;
+            };
+            std::vector<Entry> entries;
     };
 }
 

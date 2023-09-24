@@ -26,18 +26,12 @@ std::size_t find_unquoted(const std::string& line, char character, std::size_t i
 // Creates duplicate of string without whitespace, leaving original unchanged
 std::string remove_whitespace(const std::string& line);
 
-// TODO: Create functions to add whitespace but keep single line json, and to fully inflate to tree structure
+// TODO: Create functions to add whitespace but keep single line json, and to fully inflate to tree structue
 
-// find beginning and end of next field, searching from index to end
-// Field indices are: "Key 1":"Value 1","Key 2":[1, 2, 3, 4, 5],"Key 3":false
-//                                      ^                      ^
-// String shall contain no additional whitespace. It will be removed when the string is stored in json
-// Currently non-member fuction to test implementation
-// returns <npos, npos> if index is within the final field
-std::pair<std::size_t, std::size_t> next_field(const std::string& line, std::size_t index);
-
-// Possibly want to add functions for finding the start of the next field in object or array
-
+// Function to identify keys and values in an object string
+// Actual implementation will create vector of json::Json::Entry structures for fast access
+// A starting at entry N version will also be needed to speed the update of entries after a change
+void identify_fields(const std::string& line);
 
 
 #endif//__PARSING_HPP__

@@ -123,25 +123,66 @@ std::string remove_whitespace(const std::string& line)
     return result;
 }
 
-//{"Key 1":"Value 1","Key 2":[1,2,3,4,5],"Key, third":false}
-
-// PROBLEM: Can't find first field, need to be able to handle case with or without initial curly brace
-/*
-std::pair<std::size_t, std::size_t> next_field(const std::string& line, std::size_t index)
+// this is a test function, so no error checking, assumes no whitespace
+void identify_fields(const std::string& line)
 {
-    if (index > line.size()) throw json::parsing_error("Index provided is outside the string");
+    std::string bracketing;
+    bracketing.reserve(line.size());
+    
+    std::size_t itr = 1; // start inside bracket
+    std::size_t b_itr = 0;
 
-    std::size_t start = std::string::npos;
-
-    if (index == 0) // either already at start or need to skip initial curly brace
+    bool loop = true;
+    while (loop)
     {
-        if start = (line[0] == '{');
-    }
-    else
-    {
-         // find next comma and assign next character to start
+        // find start of key
+        itr = find_unquoted(line, '"', itr);
+        while (b_itr < itr)
+        {
+            bracketing += ' ';
+            b_itr++;
+        }
+        bracketing += '^';
+        b_itr++;
+
+        // find start of value (colon delim)
+        itr = find_unquoted(line, ':', itr);
+        while (b_itr < itr - 1)
+        {
+            bracketing += 'k';
+            b_itr++;
+        }
+        bracketing += "^ ^";
+        itr++; // no whitespace between ':' and beginning of value
+        b_itr = itr + 1;
+
+        // find end of value (comma delim)
+        switch (line[itr])
+        {
+            case '[':
+            case '{':
+                itr = match_bracket(line, itr);
+                break;
+            case '"':
+                itr = match_quote(line, itr);
+                break;
+        }
+        itr++;
+        itr = find_unquoted(line, ',', itr);
+        if (itr == std::string::npos)
+        {
+            itr = line.size() - 1;
+            loop = false;
+        }
+        while (b_itr < itr - 1)
+        {
+            bracketing += 'v';
+            b_itr++;
+        }
+
+        bracketing += '^';
+        b_itr++;
     }
 
-    // find following comma and return <start, index>
+    std::cout << line << '\n' << bracketing << '\n';
 }
-*/
