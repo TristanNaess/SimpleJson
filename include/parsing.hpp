@@ -33,5 +33,7 @@ std::string remove_whitespace(const std::string& line);
 // A starting at entry N version will also be needed to speed the update of entries after a change
 void identify_fields(const std::string& line);
 
+// Recursively verifies that given string is valid json
+bool verify_json(const std::string_view line);
 
 #endif//__PARSING_HPP__

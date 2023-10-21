@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <iostream>
+#include <fstream>
 #include "parsing.hpp"
 #include "error.hpp"
 
@@ -234,11 +236,21 @@ TEST(RemoveWhitespace, WorksForGoodData)
 // Undefined behavior for improperly formatted data. This is fine
 
 // --------------------------------------
-// Tests for next_field
+// Tests for verify_json
 // --------------------------------------
-/*
-TEST(NextField, WorksWhenUsedProperly)
+TEST(VerifyJson, GoodDataReturnsTrue)
 {
     std::string good_json = R"({"key 1:"value 1","key 2":[1,2,3,4,5],"key, third":false})";
+    std::string good_recursive_json = R"({"key 1":{"Key 1.1":{"Key 1.1.1":["Hello","World"],"Key 1.1.2":"{}\""},"Key 1.2":false},"Key 2":null})";
+
+    std::string error;
+    EXPECT_TRUE(verify_json(good_json, error)) << "Failed to recognise a legal json string";
+    EXPECT_TRUE(verify_json(good_recursive_json, error)) << "Failed to recognise a deeply nested legal json string";
 }
-*/
+
+TEST(VerifyJson, BadDataReturnsAcceptableError)
+{
+    // put bad json here
+    
+    EXPECT_FALSE(verify_json(json_string)) << "Failed to return false for bad json string";
+}
