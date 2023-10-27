@@ -252,14 +252,49 @@ bool verify_string(const std::string_view line)
 
 bool verify_number(const std::string_view line)
 {
-    if (line.size() == 0) return false;
+    auto itr = line.begin();
+    if (itr == line.end()) return false; // number cannot be empty string
 
+    if (*itr != '-' && (*itr < '0' || *itr > '9')) return false; // incorrect start character (special case to handle '-'
+    // technically allows non-standard leading 0's, but I prefer being able to put these
+    itr++;
+
+    bool has_decimal = false;
+    bool has_exponent = false;
+
+    for (;itr != line.end(); itr++)
+    {
+        if (*itr == '.') { has_decimal = true; itr++; break; }
+        if (*itr == 'e' || *itr == 'E') { has_exponent = true; itr++; break; }
+        if (*itr < '0' || *itr > '9') return false; // non-digit char
+    }
+
+    // decimal part
+    if (has_decimal)
+    {
+        for (; itr != line.end(); itr++)
+        {
+            if (*itr == 'e' || *itr == 'E') { has_exponent = true; itr++; break; }
+            if (*itr < '0' || *itr > '9') return false; // non-digit char
+        }
+    }
+
+    // exponent part
+    if (has_exponent)
+    {
+        if (*itr != '-' && *itr != '+' && (*itr < '0' || *itr > '9')) return false; // not legal first char of exponent
+        for (; itr != line.end(); itr++)
+        {
+            if (*itr < '0' || *itr > '9') return false; // non-digit char
+        }
+    }
+    return true;
 }
 
 // covers null as well
 bool verify_bool(const std::string_view line)
 {
-
+    return (line == "true" || line == "false" || line == "null");
 }
 
 // TODO:Write Tests
