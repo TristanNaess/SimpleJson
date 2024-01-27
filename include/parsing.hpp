@@ -23,9 +23,13 @@ std::size_t match_bracket(const std::string& line, std::size_t index);
 std::size_t find_unquoted(const std::string& line, char character, std::size_t index = 0);
 
 // Removes all whitespace characters that are not inside a quote surrounded string
+// Whitespace includes: " \n\r\t" as specified by JSON
 // Creates duplicate of string without whitespace, leaving original unchanged
 std::string remove_whitespace(const std::string& line);
 
-// TODO: Create functions to add whitespace but keep single line json, and to fully inflate to tree structue
+// Adds whitespace to json to make more readable, tree makes one line per field
+std::string pretty_json(const std::string& line);
+//std::string pretty_json_tree(const std::string& line);
+
 
 #endif//__PARSING_HPP__
