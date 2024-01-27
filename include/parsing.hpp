@@ -28,9 +28,4 @@ std::string remove_whitespace(const std::string& line);
 
 // TODO: Create functions to add whitespace but keep single line json, and to fully inflate to tree structue
 
-// Function to identify keys and values in an object string
-// Actual implementation will create vector of json::Json::Entry structures for fast access
-// A starting at entry N version will also be needed to speed the update of entries after a change
-void identify_fields(const std::string& line);
-
 #endif//__PARSING_HPP__

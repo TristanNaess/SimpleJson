@@ -17,11 +17,14 @@ bool verify_object(const std::string_view line)
     if (line.front() != '{' || line.back() != '}') { return false; }
 
     // iteratively extract fields and verify
+
+    return false;
 }
 
 bool verify_array(const std::string_view line)
 {
-    
+    // TODO implement
+    return false;   
 }
 
 bool verify_string(const std::string_view line)
@@ -34,11 +37,11 @@ bool verify_string(const std::string_view line)
         // not a control character
         if (*itr < 0x20 || (*itr > 0x7e && *itr < 0xa0)) return false;
         // errant quote
-        if (*itr == '"' && itr != line.back() - 1) return false;
+        if (*itr == '"' && itr != line.end() - 1) return false;
         if (*itr == '\\')
         {
             // cannot be penultimate character
-            if (itr == line.back() - 2) return false;
+            if (itr == line.end() - 2) return false;
             itr++;
 
             if (*itr == '"' || 
@@ -52,7 +55,7 @@ bool verify_string(const std::string_view line)
             if (*itr == 'u')
             {
                 // four characters and terminal quote must fit before back()
-                if (itr > line.back() - 6) return false;
+                if (itr > line.end() - 6) return false;
                 itr++;
 
                 for (size_t i = 0; i < 4; i++)

@@ -7,7 +7,7 @@
 
 namespace json
 {
-    using std::size_t index;
+    using index = std::size_t;
     enum class Type
     {
         Object,

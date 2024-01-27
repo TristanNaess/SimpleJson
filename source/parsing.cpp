@@ -1,11 +1,12 @@
 #include "parsing.hpp"
 #include "error.hpp"
-#include <iostream> // temporary for identify fields
+#include <iostream> // for debugging
 
 // When it would affect the parsing, it is assumed that all whitespace not in strings has been removed before parsing
 
 std::size_t match_quote(const std::string& line, std::size_t index)
 {
+    // The guards shouldn't be necessary, since use is purely internal. Move checks to outside function later
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
     if (line[index] != '"') throw json::parsing_error("No quote at index provided in argument");
     index++;
@@ -27,6 +28,7 @@ std::size_t match_quote(const std::string& line, std::size_t index)
 
 std::size_t match_bracket(const std::string& line, std::size_t index)
 {
+    // Move check outside function, internal use only
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
     char open_bracket = line[index];
     char close_bracket;
@@ -58,6 +60,7 @@ std::size_t match_bracket(const std::string& line, std::size_t index)
         // I could rewrite this with find_unquoted(), but ehh...
         if (line[index] == '"') // skip internal strings to avoid non-syntax brackets
         {
+            // try catch for no matching quote error. Other conditions shouldn't occur
             try
             {
                 index = match_quote(line, index);
@@ -123,66 +126,3 @@ std::string remove_whitespace(const std::string& line)
     return result;
 }
 
-// this is a test function, so no error checking, assumes no whitespace
-void identify_fields(const std::string& line)
-{
-    std::string bracketing;
-    bracketing.reserve(line.size());
-    
-    std::size_t itr = 1; // start inside bracket
-    std::size_t b_itr = 0;
-
-    bool loop = true;
-    while (loop)
-    {
-        // find start of key
-        itr = find_unquoted(line, '"', itr);
-        while (b_itr < itr)
-        {
-            bracketing += ' ';
-            b_itr++;
-        }
-        bracketing += '^';
-        b_itr++;
-
-        // find start of value (colon delim)
-        itr = find_unquoted(line, ':', itr);
-        while (b_itr < itr - 1)
-        {
-            bracketing += 'k';
-            b_itr++;
-        }
-        bracketing += "^ ^";
-        itr++; // no whitespace between ':' and beginning of value
-        b_itr = itr + 1;
-
-        // find end of value (comma delim)
-        switch (line[itr])
-        {
-            case '[':
-            case '{':
-                itr = match_bracket(line, itr);
-                break;
-            case '"':
-                itr = match_quote(line, itr);
-                break;
-        }
-        itr++;
-        itr = find_unquoted(line, ',', itr);
-        if (itr == std::string::npos)
-        {
-            itr = line.size() - 1;
-            loop = false;
-        }
-        while (b_itr < itr - 1)
-        {
-            bracketing += 'v';
-            b_itr++;
-        }
-
-        bracketing += '^';
-        b_itr++;
-    }
-
-    std::cout << line << '\n' << bracketing << '\n';
-}
