@@ -7,6 +7,7 @@
 
 namespace json
 {
+    using std::size_t index;
     enum class Type
     {
         Object,
@@ -23,59 +24,51 @@ namespace json
             Json();
             Json(const std::string& line);
             
-            // for now use a separate getter for each type
-            // all throw if wrong type, bad key or bad index
-            // throw json::out_of_range for bad key or index
-            // throw json::wrong_type if the type requested was incorrect
+            // object specific
+            std::vector<std::string> keys() const;
+            bool contains(std::string_view key) const;
 
-            // later change to templated version so:
-            //    Number can convert to any numeric, flooring if necessary
-            //    Bool, Number, Null can all convert to string if necessary
+            // array specific
+            json::index size() const;
 
-            // all come in matching object and array access versions
-            // ModifyingAccessorType getObject(std::string_view key);
-            // ModifyingAccessorType getObject(std::size_t index);
+            // returns type, either json::Object or json::Array
+            Type type() const;
+            // deduces and returns type of data at key/index
+            Type type(std::string_view key) const;
+            Type type(json::index index) const;
 
-            // ModifyingAccessorType getArray(std::string_view key);
-            // ModifyingAccessorType getArray(std::size_t index);
+            // TODO
+            // make later change to templated version so:
+            // Number can convert to any numeric, flooring if necessary
+            // Bool, Number, Null can all convert to string if necessary
 
-            // std::string_view getString(std::string_view key) const;
-            // std::string_view getString(std::size_t index) const;
-            // ModifyingAccessorType getString(std::string_view key);
-            // ModifyingAccessorType getString(std::size_t index);
+            // read operations return copy
+            // throw json::wrong_type for accessor not matching data type
+            // throw json::out_of_range for index > size
+            Json get_object(std::string_view key) const;
+            Json get_object(json::index index) const;
 
-            // double getDouble(std::string_view key) const;
-            // double getDouble(std::size_t index) const;
-            // ModifyingAccessorType getDouble(std::string_view key);
-            // ModifyingAccessorType getDouble(std::size_t index);
+            Json get_array(std::string_view key) const;
+            Json get_array(json::index index) const;
 
-            // bool getBool(std::string_view key) const;
-            // bool getBool(std::size_t index) const;
-            // ModifyingAccessorType getBool(std::string_view key) const;
-            // ModifyingAccessorType getBool(std::size_t index) const;
+            std::string get_string(std::string_view key) const;
+            std::string get_string(json::index index) const;
 
-            // Type get_type(std::string_view key) const;
-            // Type get_type(std::size_t index) const;
+            double get_double(std::string_view key) const;
+            double get_double(json::index index) const;
+
+            int get_int(std::string_view key) const;
+            int get_int(json::index index) const;
+
+            bool get_bool(std::string_view key) const;
+            bool get_bool(json::index index) const;
 
             bool is_null(std::string_view key) const;
             bool is_null(std::size_t index) const;
 
-            bool contains_key(std::string_view key) const;
-            std::vector<std::string> get_keys() const;
-            std::size_t size() const;
-
         private:
             std::string m_contents;
             Type m_type;
-            
-            // holds locations of keys and values for faster reference
-            // changes made to entries earlier in the string invalidate later entries
-            struct Entry
-            {
-                std::string_view key, value;
-                bool valid;
-            };
-            std::vector<Entry> entries;
     };
 }
 

@@ -18,6 +18,13 @@ namespace json
             explicit out_of_range(const std::string& message = "") : std::runtime_error(message) {  }
             explicit out_of_range(const char* message = "") : std::runtime_error(message) {  }
     };
+
+    class wrong_type : public std::runtime_error
+    {
+        public:
+            explicit wrong_type(const std::string& message = "") : std::runtime_error(message) {  }
+            explicit wrong_type(const char* message = "") : std::runtime_error(message) {  }
+    };
 }
 
 #endif//__ERROR_HPP__
