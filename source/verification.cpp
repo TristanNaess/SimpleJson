@@ -1,125 +1,73 @@
+#include "verification.hpp"
 #include "parsing.hpp"
-#include "error.hpp"
-#include <iostream> // temporary for lazy debugging
 
+// "error.hpp" included by verification.hpp
 
-// -------------------------------------------------------------------------
-// ALL VERIFICATION FUNCTIONS ASSUME THE STRINGS HAVE WHITE SPACE REMOVED
-// THE FUNCTIONS WILL BREAK IF PASSED A STRING WITH WHITESPACE
-// -------------------------------------------------------------------------
+// ----------------------------------------------------------------------
+// ALL VERIFICATION FUNCTIONS ASSUME THE STRINGS HAVE WHITESPACE REMOVED
+// ----------------------------------------------------------------------
 
-// Due to being non-public apart from verify_json(), tests for verify_*() functions will only be done through verify_json() tests
+// verify_*() functions are only called through verify_json() and so are not tested directly
+// data bounds checks and the like are handled by the calling function, either verify_object, array, or json
 
-bool verify_object(const std::string_view line)
+json::Result verify_json(const std::string_view line)
 {
-    // bounds and bracket check
-    if (line.size() < 2) { return false; }
-    if (line.front() != '{' || line.back() != '}') { return false; }
-
-    // iteratively extract fields and verify
-
-    return false;
-}
-
-bool verify_array(const std::string_view line)
-{
-    // TODO implement
-    return false;   
-}
-
-bool verify_string(const std::string_view line)
-{
-    if (line.size() < 2) return false;
-    if (line.front() != '"' || line.back() != '"') return false;
-
-    for (auto itr = line.begin(); itr != line.end(); itr++)
+    if (line.size() == 0) return json::Result{std::string("Error verifying json. Empty string") + line};
+    json::Result res;
+    switch (line.front())
     {
-        // not a control character
-        if (*itr < 0x20 || (*itr > 0x7e && *itr < 0xa0)) return false;
-        // errant quote
-        if (*itr == '"' && itr != line.end() - 1) return false;
-        if (*itr == '\\')
+        case '{':
+            // check bounds characters in verify_object
+            res = verify_object(line);
+            break;
+        case '[':
+            res = verify_array(line);
+            break;
+        default:
+            return json::Result(std::string("Error verifying json. Not object or array data: ") + line);
+    }
+
+    if (!res)
+    {
+        return json::Result("Error verifying object in json: ", res);
+    }
+    return res;
+}
+
+json::Result verify_object(const std::string_view line);
+
+json::Result verify_array(const std::string_view line);
+
+json::Result verify_number(const std::string_view line)
+{
+    // first char must be [0-9]|-|+ to determine this function is called
+
+    unsigned int part = 0;
+
+    for (auto itr = line.begin()+1; itr < line.end(); itr++)
+    {
+        if (part == 0 && *itr == '.')
         {
-            // cannot be penultimate character
-            if (itr == line.end() - 2) return false;
+            part = 1;
+            if (itr+1 == line.end()) return json::Result{std::string("Error verifying number. No character after decimal point in string: ") + line};
+            continue;
+        }
+        if (part == 1 && (*itr == 'e' || *itr == 'E'))
+        {
+            part = 2;
             itr++;
-
-            if (*itr == '"' || 
-                *itr == '\\' ||
-                *itr == '/' ||
-                *itr == 'b' ||
-                *itr == 'f' ||
-                *itr == 'n' ||
-                *itr == 'r' ||
-                *itr == 't') continue;
-            if (*itr == 'u')
-            {
-                // four characters and terminal quote must fit before back()
-                if (itr > line.end() - 6) return false;
-                itr++;
-
-                for (size_t i = 0; i < 4; i++)
-                {
-                    if (!((*itr >= '0' && *itr <= '9') || (*itr >= 'a' && *itr <= 'f') || (*itr >= 'A' && *itr <= 'F'))) return false;
-                    itr++;
-                }
-            }
+            if (itr == line.end()) return json::Result{std::string("Error verifying number. No character after 'e' in string: ") + line};
+            if ((*itr < '0' || *itr > '9') && *itr != '+' && *itr != '-') return json::Result{std::string("Error verifying number. Bad character after 'e' in string: ") + line};
+            continue;
         }
-    }
-    return true;
-}
-
-bool verify_number(const std::string_view line)
-{
-    auto itr = line.begin();
-    if (itr == line.end()) return false; // number cannot be empty string
-
-    if (*itr != '-' && (*itr < '0' || *itr > '9')) return false; // incorrect start character (special case to handle '-'
-    // technically allows non-standard leading 0's, but I prefer being able to put these
-    itr++;
-
-    bool has_decimal = false;
-    bool has_exponent = false;
-
-    for (;itr != line.end(); itr++)
-    {
-        if (*itr == '.') { has_decimal = true; itr++; break; }
-        if (*itr == 'e' || *itr == 'E') { has_exponent = true; itr++; break; }
-        if (*itr < '0' || *itr > '9') return false; // non-digit char
+        if (*itr < '0' || *itr > '9') return json::Result{std::string("Error verifying number. Non-digit character in digit part of string: ") + line};
     }
 
-    // decimal part
-    if (has_decimal)
-    {
-        for (; itr != line.end(); itr++)
-        {
-            if (*itr == 'e' || *itr == 'E') { has_exponent = true; itr++; break; }
-            if (*itr < '0' || *itr > '9') return false; // non-digit char
-        }
-    }
-
-    // exponent part
-    if (has_exponent)
-    {
-        if (*itr != '-' && *itr != '+' && (*itr < '0' || *itr > '9')) return false; // not legal first char of exponent
-        for (; itr != line.end(); itr++)
-        {
-            if (*itr < '0' || *itr > '9') return false; // non-digit char
-        }
-    }
-    return true;
+    return json::Result;
 }
 
-// covers null as well
-bool verify_bool(const std::string_view line)
-{
-    return (line == "true" || line == "false" || line == "null");
-}
+json::Result verify_string(const std::string_view line);
 
-// TODO:Write Tests
-bool verify_json(const std::string_view line)
-{
-    // do not need to determine what is wrong, just whether there is an error
-    // May extend to allow other top level types, but currently only accepts objects
-    return verify_object(line);
-}
+json::Result verify_bool(const std::string_view line);
+
+json::Result verify_null(const std::string_view line);

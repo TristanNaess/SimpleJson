@@ -28,7 +28,7 @@ std::size_t find_unquoted(const std::string& line, char character, std::size_t i
 std::string remove_whitespace(const std::string& line);
 
 // Adds whitespace to json to make more readable, tree makes one line per field
-std::string pretty_json(const std::string& line);
+std::string pretty_json(const std::string& line); // TODO: implement using parsing functions
 //std::string pretty_json_tree(const std::string& line);
 
 

@@ -125,4 +125,3 @@ std::string remove_whitespace(const std::string& line)
     result.shrink_to_fit();
     return result;
 }
-

@@ -2,6 +2,7 @@
 #define __ERROR_HPP__
 
 #include <stdexcept>
+#include <string>
 
 namespace json
 {
@@ -24,6 +25,24 @@ namespace json
         public:
             explicit wrong_type(const std::string& message = "") : std::runtime_error(message) {  }
             explicit wrong_type(const char* message = "") : std::runtime_error(message) {  }
+    };
+
+    class Result
+    {
+        public:
+            Result() : m_status(true) { } // good state
+            Result(const std::string& error) : m_status(false), m_message(error) {  } // error state
+            Result(const std::string& prefix, const Result& other) : m_status(false)
+            {
+                m_message = prefix + other.m_message;
+            }
+
+            operator bool() const { return m_status; }
+            const std::string& message() const { return m_message; }
+
+        private:
+            bool m_status;
+            std::string m_message = "";
     };
 }
 

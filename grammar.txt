@@ -53,15 +53,14 @@ number ->       integer fraction exponent
 integer ->      digit
                 | onenine digits
                 | '-' digit
-                | '-' onenine digits
+                | '-' digit digits
+                | '+' digit
+                | '+' digit digits
 
 digits ->       digit
                 | digit digits
 
-digit ->        '0'
-                | onenine
-
-onenine ->      '1' . '9'
+digit ->        '0' . '9'
 
 fraction ->     ""
                 | '.' digits
