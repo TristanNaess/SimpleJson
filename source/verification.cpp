@@ -16,7 +16,9 @@ json::Result verify_number(const std::string_view line)
 
     unsigned int part = 0;
 
-    for (auto itr = line.begin()+1; itr < line.end(); itr++)
+    auto itr = line.begin()+1;
+    if ((line.front() == '-' || line.front() == '+') && (*itr < '0' || *itr > '9')) return json::Result{std::string("Error verifying number. No digit between '+/-' and '.' in string: ") + std::string(line)};
+    for (; itr < line.end(); itr++)
     {
         if (part == 0 && *itr == '.') // end whole number
         {
