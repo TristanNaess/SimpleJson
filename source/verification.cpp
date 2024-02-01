@@ -18,13 +18,13 @@ json::Result verify_number(const std::string_view line)
 
     for (auto itr = line.begin()+1; itr < line.end(); itr++)
     {
-        if (part == 0 && *itr == '.')
+        if (part == 0 && *itr == '.') // end whole number
         {
             part = 1;
             if (itr+1 == line.end()) return json::Result{std::string("Error verifying number. No character after decimal point in string: ") + std::string(line)};
             continue;
         }
-        if (part == 1 && (*itr == 'e' || *itr == 'E'))
+        if (part == 1 && (*itr == 'e' || *itr == 'E')) // end decimal
         {
             part = 2;
             itr++;
@@ -32,6 +32,7 @@ json::Result verify_number(const std::string_view line)
             if ((*itr < '0' || *itr > '9') && *itr != '+' && *itr != '-') return json::Result{std::string("Error verifying number. Bad character after 'e' in string: ") + std::string(line)};
             continue;
         }
+        // end exponent
         if (*itr < '0' || *itr > '9') return json::Result{std::string("Error verifying number. Non-digit character in digit part of string: ") + std::string(line)};
     }
 
