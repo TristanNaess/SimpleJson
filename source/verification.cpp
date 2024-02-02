@@ -1,5 +1,7 @@
 #include "verification.hpp"
 #include "parsing.hpp"
+#include <vector>
+#include <iostream>
 
 // "error.hpp" included by verification.hpp
 
@@ -10,7 +12,7 @@
 // verify_*() functions are only called through verify_json() and so are not tested directly
 // data bounds checks and the like are handled by the calling function, either verify_object, array, or json
 
-json::Result verify_number(const std::string_view line)
+json::Result verify_number(std::string_view line)
 {
     // first char must be [0-9]|-|+ to determine this function is called
 
@@ -41,34 +43,50 @@ json::Result verify_number(const std::string_view line)
     return json::Result{};
 }
 
-json::Result verify_string(const std::string_view line)
+json::Result verify_string(std::string_view line)
 {
     return json::Result{ "verify_string() not implemented" };
 }
 
-json::Result verify_bool(const std::string_view line)
+json::Result verify_bool(std::string_view line)
 {
     return json::Result{ "verify_bool() not implemented" };
 }
 
-json::Result verify_null(const std::string_view line)
+json::Result verify_null(std::string_view line)
 {
     return json::Result{ "verify_null() not implemented" };
 }
 
-json::Result verify_object(const std::string_view line)
+// TODO: re-implement later with same functions as used to extract fields
+json::Result verify_object(std::string_view line)
 {
-    return json::Result{ "verify_object() not implemented" };
+    // initial '{' is verified before call
+    if (line.back() != '}') return json::Result{"Error verifying object. No closing '}': " + std::string(line)};
+    
+
+    // crop off surrounding {}
+    line.remove_prefix(1);
+    line.remove_suffix(1);
+
+    if (line.size() == 0) return json::Result();
+
+    std::cout << '\'' << line << "'\n";
+
+    // Figure out the best way to iterate over fields
+    // Split at ':' and check key and val
+
+    return json::Result{"Not fully verified"};
 }
 
-json::Result verify_array(const std::string_view line)
+json::Result verify_array(std::string_view line)
 {
     return json::Result{ "verify_array() not implemented" };
 }
 
-json::Result verify_json(const std::string_view line)
+json::Result verify_json(std::string_view line)
 {
-    if (line.size() == 0) return json::Result{std::string("Error verifying json. Empty string") + std::string(line)};
+    if (line.size() == 0) return json::Result{std::string("Error verifying json. Empty string")};
     json::Result res;
     switch (line.front())
     {
