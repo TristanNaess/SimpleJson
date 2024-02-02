@@ -5,6 +5,6 @@
 #include "error.hpp"
 
 // verifies a passed string is valid JSON
-json::Result verify_json(const std::string_view line);
+json::Result verify_json(std::string_view line);
 
 #endif//__VERIFICATION_HPP__
