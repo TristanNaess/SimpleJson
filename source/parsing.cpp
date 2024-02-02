@@ -4,7 +4,7 @@
 
 // When it would affect the parsing, it is assumed that all whitespace not in strings has been removed before parsing
 
-std::size_t match_quote(const std::string& line, std::size_t index)
+std::size_t match_quote(std::string_view line, std::size_t index)
 {
     // The guards shouldn't be necessary, since use is purely internal. Move checks to outside function later
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
@@ -26,7 +26,7 @@ std::size_t match_quote(const std::string& line, std::size_t index)
     throw json::parsing_error("No matching quote located");
 }
 
-std::size_t match_bracket(const std::string& line, std::size_t index)
+std::size_t match_bracket(std::string_view line, std::size_t index)
 {
     // Move check outside function, internal use only
     if (index >= line.size()) throw json::parsing_error("Index argument provided is outside the string");
@@ -75,7 +75,7 @@ std::size_t match_bracket(const std::string& line, std::size_t index)
     throw json::parsing_error("No matching bracket located");
 }
 
-std::size_t find_unquoted(const std::string& line, char character, std::size_t index)
+std::size_t find_unquoted(std::string_view line, char character, std::size_t index)
 {
     while (index < line.size())
     {
