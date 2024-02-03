@@ -275,10 +275,12 @@ json::result verify_string(std::string_view line)
 
 json::result verify_bool(std::string_view line)
 {
-    return json::result{ "verify_bool() not implemented" };
+    if (line == "true" || line == "false" || line == "True" || line == "False") return json::result();
+    return json::result{ "Error verifying boolean. did not match [Tt]rue | [Ff]alse: " + line };
 }
 
 json::result verify_null(std::string_view line)
 {
-    return json::result{ "verify_null() not implemented" };
+    if (line == "null" || line == "Null") return json::result();
+    return json::result{ "Error verifying null. did not match [Nn]ull: " + line };
 }

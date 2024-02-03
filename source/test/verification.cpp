@@ -217,7 +217,7 @@ TEST(VerifyJson, BadNumber)
 
 TEST(VerifyJson, GoodBool)
 {
-    std::string str = "t";
+    std::string str = "true";
     json::result res = verify_bool(str);
     ASSERT_TRUE(res) << "Json Boolean verification not implemented";
 
@@ -233,7 +233,7 @@ TEST(VerifyJson, GoodBool)
 
 TEST(VerifyJson, BadBool)
 {
-    std::string str = "t";
+    std::string str = "true";
     json::result res = verify_bool(str);
     ASSERT_TRUE(res) << "Json Boolean verification not implemented";
 
@@ -248,7 +248,7 @@ TEST(VerifyJson, BadBool)
 
 TEST(VerifyJson, GoodNull)
 {
-    std::string str = "n";
+    std::string str = "null";
     json::result res = verify_null(str);
     ASSERT_TRUE(res) << "Json Null verification not implemented";
 
@@ -260,7 +260,7 @@ TEST(VerifyJson, GoodNull)
 
 TEST(VerifyJson, BadNull)
 {
-    std::string str = "n";
+    std::string str = "null";
     json::result res = verify_null(str);
     ASSERT_TRUE(res) << "Json Null verification not implemented";
 
