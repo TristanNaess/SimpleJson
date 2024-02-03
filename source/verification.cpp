@@ -237,18 +237,28 @@ json::result verify_number(std::string_view line)
     if ((line.front() == '-' || line.front() == '+') && (*itr < '0' || *itr > '9')) return json::result{"Error verifying number. No digit between '+/-' and '.' in string: " + line};
     for (; itr < line.end(); itr++)
     {
-        if (part == 0 && *itr == '.') // end whole number
+        // end decimal
+        if (part == 1 && (*itr == 'e' || *itr == 'E'))
+        {
+            part = 2;
+            itr++;
+            if (itr == line.end()) return json::result{"Error verifying number. No character after 'e' in string: " + line};
+            if ((*itr < '0' || *itr > '9') && *itr != '-' && *itr != '+') return json::result{"Error verifying number. Bad character after 'e' in string: " + line};
+            continue;
+        }
+        // end whole number w/ decimal
+        if (part == 0 && *itr == '.')
         {
             part = 1;
             if (itr+1 == line.end()) return json::result{"Error verifying number. No character after decimal point in string: " + line};
             continue;
         }
-        if (part == 1 && (*itr == 'e' || *itr == 'E')) // end decimal
+        if (part == 0 && (*itr == 'e' || *itr == 'E'))
         {
             part = 2;
             itr++;
-            if (itr == line.end()) return json::result{"Error verifying number. No character after 'e' in string: " + line};
-            if ((*itr < '0' || *itr > '9') && *itr != '+' && *itr != '-') return json::result{"Error verifying number. Bad character after 'e' in string: " + line};
+            if (itr == line.end()) return json::result{ "Error verifying number. No character after 'e' in string: " + line };
+            if ((*itr < '0' || *itr > '9') && *itr != '-' && *itr != '+') return json::result{ "Error verifying number. Bad character after 'e' in string: " + line };
             continue;
         }
         // end exponent
