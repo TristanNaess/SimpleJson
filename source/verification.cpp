@@ -102,7 +102,7 @@ json::result verify_object(std::string_view line)
             return json::result{ std::string("Error verifying object: ") + pe.what() };
         }
 
-        res = verify_string(f.substr(0, delim-1));
+        res = verify_string(f.substr(0, delim));
         if (!res) return json::result{ "Error verifying object: " + res.message() };
 
         delim++;
@@ -270,7 +270,48 @@ json::result verify_number(std::string_view line)
 
 json::result verify_string(std::string_view line)
 {
-    return json::result{ "verify_string() not implemented" };
+    // check surrounding quotes
+    if (line.front() != '"') return json::result{ "Error verifying string. no initial '\"': " + line };
+    if (line.back() != '"') return json::result{ "Error verifying string. no closing '\"': " + line };
+
+    // remove surrounding quotes
+    line.remove_prefix(1);
+    line.remove_suffix(1);
+
+    for (auto itr = line.begin(); itr != line.end(); itr++)
+    {
+        if (*itr == '\\')
+        {
+            itr++;
+            switch (*itr)
+            {
+                case '"':
+                case '\\':
+                case '/':
+                case 'b':
+                case 'f':
+                case 'n':
+                case 'r':
+                case 't':
+                    continue;
+                    break;
+                case 'u':
+                    itr++;
+                    for (std::size_t i = 0; i < 4; i++, itr++)
+                    {
+                        if (!(*itr >= '0' && *itr <= '9') && !((*itr >= 'a' && *itr <= 'f') || (*itr >= 'A' && *itr <= 'F')))
+                            return json::result{ "Error verifying string. Non hex character in \\uXXXX sequence: " + line };
+                    }
+                    continue;
+                    break;
+                default:
+                    return json::result{ "Error verifying string. Non-legal escaped character: " + line };
+            }
+        }
+        if (*itr == '"') return json::result{ "Error verifying string. Unescaped '\"' before end of string: " + line };
+    }
+
+    return json::result();
 }
 
 json::result verify_bool(std::string_view line)
