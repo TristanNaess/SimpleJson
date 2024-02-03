@@ -27,12 +27,13 @@ namespace json
             explicit wrong_type(const char* message = "") : std::runtime_error(message) {  }
     };
 
-    class Result
+    class result
     {
         public:
-            Result() : m_status(true) { } // good state
-            Result(const std::string& error) : m_status(false), m_message(error) {  } // error state
-            Result(const std::string& prefix, const Result& other) : m_status(false)
+            result() : m_status(true) { } // good state
+            result(const std::string& error) : m_status(false), m_message(error) {  } // error state
+            result(const char* error) : m_status(false), m_message(std::string(error)) {  } // for string literal
+            result(const std::string& prefix, const result& other) : m_status(false)
             {
                 m_message = prefix + other.m_message;
             }

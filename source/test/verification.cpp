@@ -8,7 +8,7 @@ TEST(VerifyJson, GoodObject)
 {
     // check function implemented / check empty case
     std::string str = "{}";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Object verification function not implemented";
 
     str = R"({"key":"value"})";
@@ -24,7 +24,7 @@ TEST(VerifyJson, BadObject)
 {
     // check function is implemented, negative tests will not fail for unimplemented function
     std::string str = "{}";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Object verification function not implemented";
 
     // will not parse as object without initial brace
@@ -69,7 +69,7 @@ TEST(VerifyJson, GoodArray)
 {
     // check function is implemented / check empty case
     std::string str = "[]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Array verification not implemented";
 
     // simple data
@@ -86,7 +86,7 @@ TEST(VerifyJson, GoodArray)
 TEST(VerifyJson, BadArray)
 {
     std::string str = "[]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Array verification not implemented";
 
     // will not parse as array if missing initial bracket
@@ -105,7 +105,7 @@ TEST(VerifyJson, BadArray)
 TEST(VerifyJson, GoodString)
 {
     std::string str = "[\"Foobar\"]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json String verification not implemented";
 
     str = R"(["foobar"])";
@@ -120,7 +120,7 @@ TEST(VerifyJson, GoodString)
 TEST(VerifyJson, BadString)
 {
     std::string str = "[\"Foobar\"]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json String verification not implemented";
 
     // will not parse as string if missing initial quote
@@ -149,7 +149,7 @@ TEST(VerifyJson, BadString)
 TEST(VerifyJson, GoodNumber)
 {
     std::string str = "[0]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Number verification not implemented";
 
     // whole numbers
@@ -190,7 +190,7 @@ TEST(VerifyJson, GoodNumber)
 TEST(VerifyJson, BadNumber)
 {
     std::string str = "[0]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Number verification not implemented";
 
     // will not parse as number with bad initial character
@@ -218,7 +218,7 @@ TEST(VerifyJson, BadNumber)
 TEST(VerifyJson, GoodBool)
 {
     std::string str = "[t]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Boolean verification not implemented";
 
     // exhaustive test of all options
@@ -234,7 +234,7 @@ TEST(VerifyJson, GoodBool)
 TEST(VerifyJson, BadBool)
 {
     std::string str = "[t]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Boolean verification not implemented";
 
     str = "[teue]";
@@ -249,7 +249,7 @@ TEST(VerifyJson, BadBool)
 TEST(VerifyJson, GoodNull)
 {
     std::string str = "[n]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Null verification not implemented";
 
     // only one possibility
@@ -261,7 +261,7 @@ TEST(VerifyJson, GoodNull)
 TEST(VerifyJson, BadNull)
 {
     std::string str = "[n]";
-    json::Result res = verify_json(str);
+    json::result res = verify_json(str);
     ASSERT_TRUE(res) << "Json Null verification not implemented";
 
     str = "[nul]";

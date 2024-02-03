@@ -4,6 +4,33 @@
 
 // When it would affect the parsing, it is assumed that all whitespace not in strings has been removed before parsing
 
+std::string operator+(const char* line1, const std::string& line2)
+{
+    std::string res;
+    res.reserve(strlen(line1) + line2.size());
+    res = line1;
+    res += line2;
+    return res;
+}
+
+std::string operator+(const char* line1, std::string_view line2)
+{
+    std::string res;
+    res.reserve(strlen(line1) + line2.size());
+    res = line1;
+    res += line2;
+    return res;
+}
+
+std::string operator+(const std::string& line1, std::string_view line2)
+{
+    std::string res;
+    res.reserve(line1.size() + line2.size());
+    res = line1;
+    res += line2;
+    return res;
+}
+
 std::size_t match_quote(std::string_view line, std::size_t index)
 {
     // The guards shouldn't be necessary, since use is purely internal. Move checks to outside function later

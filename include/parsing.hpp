@@ -2,8 +2,13 @@
 #define __PARSING_HPP__
 
 #include <string>
+#include <cstring>
 #include <utility>
 #include <string_view>
+
+std::string operator+(const char* line1, const std::string& line2);
+std::string operator+(const char* line1, std::string_view line2);
+std::string operator+(const std::string& line1, std::string_view line2);
 
 // Given initial quote, return's ending quote location or throws json::parsing_error
 std::size_t match_quote(std::string_view line, std::size_t index);
