@@ -50,8 +50,6 @@ json::result verify_object(std::string_view line)
     // empty object is valid
     if (line.size() == 0) return json::result();
 
-    std::cout << '\'' << line << "'\n";
-
     // this code may be reused for finding the next field, but may be better to keep separate for iterator-based behavior elsewhere
     std::size_t start = 0;
     std::size_t end = 0;
@@ -144,7 +142,89 @@ json::result verify_object(std::string_view line)
 
 json::result verify_array(std::string_view line)
 {
-    return json::result{ "verify_array() not implemented" };
+    if (line.front() != '[') return json::result{ "Error verifying array. no initial '[': " + line };
+    if (line.back() != ']') return json::result{ "Error verifying array. no closing ']': " + line };
+
+    // crop off []
+    line.remove_prefix(1);
+    line.remove_suffix(1);
+
+    // empty array is valid
+    if (line.size() == 0) return json::result();
+
+    std::size_t start = 0;
+    std::size_t end = 0;
+    std::vector<std::string_view> fields;
+    while (end < line.size())
+    {
+        switch (line[end])
+        {
+            case '"':
+                try
+                {
+                    end = match_quote(line, end);
+                }
+                catch (const json::parsing_error& pe)
+                {
+                    return json::result{ std::string("Error verifying array: ") + std::string(pe.what()) };
+                }
+                break;
+            case '{':
+            case '[':
+                try
+                {
+                    end = match_bracket(line, end);
+                }
+                catch (const json::parsing_error& pe)
+                {
+                    return json::result{std::string("Error verifying array: ") + pe.what()};
+                }
+                break;
+            case ',':
+                fields.push_back(line.substr(start, end-start));
+                start = end+1;
+                break;
+        }
+        end++;
+    }
+
+    fields.push_back(line.substr(start));
+
+    json::result res;
+    for (auto f : fields)
+    {
+        switch (f.front())
+        {
+            case '{':
+                res = verify_object(f);
+                break;
+            case '[':
+                res = verify_array(f);
+                break;
+            case '"':
+                res = verify_string(f);
+                break;
+            case 't':
+            case 'f':
+                res = verify_bool(f);
+                break;
+            case 'n':
+                res = verify_null(f);
+                break;
+            default:
+                if (f.front() == '+' || f.front() == '-' || (f.front() >= '0' && f.front() <= '9'))
+                {
+                    res = verify_number(f);
+                    break;
+                }
+                res = json::result{ "Error verifying array: Could not determine data type: " + f + "in: " + line };
+        }
+
+        if (!res) return res;
+        
+    }
+
+    return json::result{};
 }
 
 json::result verify_number(std::string_view line)
