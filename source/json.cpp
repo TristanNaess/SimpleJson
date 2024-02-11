@@ -1,5 +1,10 @@
 #include "json.hpp"
 
+
+// ------------------------
+// Constructors
+// ------------------------
+
 json::Json::Json() : m_type(Type::Undefined) {  }
 
 json::Json::Json(const std::string& line)
@@ -13,6 +18,9 @@ json::Json::Json(const std::string& line)
         case '[':
             m_type = Type::Array;
             break;
+                    double get_double(std::string_view key) const;
+                    double get_double(index index) const;
+                    
         default:
             throw json::wrong_type("String passed to Json::Json() does not specify an object or array");
     }
@@ -24,6 +32,10 @@ json::Json::Json(const std::string& line)
 
 json::Json::Json(std::string_view line) : json::Json::Json(std::string(line)) {  }
 
+
+// ------------------------
+// Information
+// ------------------------
 
 std::vector<std::string> json::Json::keys() const
 {
@@ -72,4 +84,93 @@ json::Type json::Json::type() const
 
 json::Type json::Json::type(std::string_view key) const
 {
+    // get type from iterator
+    return Json::Type::Undefined;
 }
+
+json::Type json::Json::type(index index) const
+{
+    // get type from iterator
+    return Json::Type::Undefined;
+}
+
+// ------------------------
+// Accessors
+// ------------------------
+
+json::Json json::Json::get_object(std::string_view key) const
+{
+
+}
+
+json::Json json::Json::get_object(json::index index) const
+{
+
+}
+
+
+json::Json json::Json::get_array(std::string_view key) const
+{
+	
+}
+
+json::Json json::Json::get_array(json::index index) const
+{
+	
+}
+
+
+std::strinjson::Json::g get_string(std::string_view key) const
+{
+	
+}
+
+std::strinjson::Json::g get_string(json::index index) const
+{
+	
+}
+
+
+double json::Json::get_double(std::string_view key) const
+{
+	
+}
+
+double json::Json::get_double(json::index index) const
+{
+	
+}
+
+
+int json::Json::get_int(std::string_view key) const
+{
+	
+}
+
+int json::Json::get_int(json::index index) const
+{
+	
+}
+
+
+bool json::Json::get_bool(std::string_view key) const
+{
+	
+}
+
+bool json::Json::get_bool(json::index index) const
+{
+	
+}
+
+
+bool is_null(std::string_view key) const
+{
+	
+}
+
+bool is_null(json::index index) const
+{
+	
+}
+

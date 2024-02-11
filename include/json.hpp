@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view> // c++17
 #include <vector>
+#include <iterator>
 
 namespace json
 {
@@ -19,28 +20,63 @@ namespace json
         Undefined
     };
     
-    // TODO Figure out how std::iterator types are implemented, and make a bidirectional iterator
-    class iterator
-    {
-        public:
-            // constructors
-
-            // accessors are the same as in Json (could implement Json accessors in terms of the iterator?
-
-            Type type() const;
-
-            // movement math operator overloads
-
-        private:
-    };
-
     class Json // TODO Make sure all std::string_view args have matching const std::string&
     {
         public:
             Json();
             Json(const std::string& line);
             Json(std::string_view line);
-            
+
+            /* IMPLEMENT AFTER GETTING BASIC ACCESS WORKING MANUALLY
+
+            // This may be fully implemented as a STL like iterator later, but I don't know if the non-standard dereferences will make that possible.
+            //      May have to add a generic wrapper type to implement dereferencing
+            // Actual implementations of functions will go here, while the versions in the Json class will use iterators to find the data
+            class iterator
+            {
+                public:
+                    // will parse the string to find the remaining locations
+                    iterator(char* start);
+                    
+                    std::string key() const;
+                    Type type() const;
+                    Type type(std::string_view key) const;
+                    Type type(index index) const;
+
+                    // Read and write accessors
+                    // To be templated later
+                    Json get_object(std::string_view key) const;
+                    Json get_object(index index) const;
+
+                    Json get_array(std::string_view key) const;
+                    Json get_array(index index) const;
+
+                    std::string get_string(std::string_view key) const;
+                    std::string get_string(index index) const;
+                    
+                    double get_double(std::string_view key) const;
+                    double get_double(index index) const;
+                    
+                    int get_int(std::string_view key) const;
+                    int get_int(index index) const;
+                    
+                    bool get_bool(std::string_view key) const;
+                    bool get_bool(index index) const;
+                    
+                    bool is_null(std::string_view key) const;
+                    bool is_null(index index) const;
+                    
+                    // operators
+
+
+                private:
+                    char* key_start;
+                    char* key_end;
+                    char* val_start;
+                    char* val_end;
+            };
+            */
+
             // object specific
             std::vector<std::string> keys() const;
             bool contains(std::string_view key) const;
@@ -54,6 +90,9 @@ namespace json
             // deduces and returns type of data at key/index
             Type type(std::string_view key) const;
             Type type(index index) const;
+
+            iterator begin();
+            iterator end();
 
             // TODO
             // make later change to templated version so:
@@ -83,6 +122,7 @@ namespace json
 
             bool is_null(std::string_view key) const;
             bool is_null(index index) const;
+
 
         private:
             std::string m_contents;
