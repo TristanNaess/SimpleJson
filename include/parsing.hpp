@@ -6,6 +6,8 @@
 #include <utility>
 #include <string_view>
 
+#include "mutable_view.hpp"
+
 std::string operator+(const char* line1, const std::string& line2);
 std::string operator+(const char* line1, std::string_view line2);
 std::string operator+(const std::string& line1, std::string_view line2);
@@ -33,5 +35,10 @@ std::string remove_whitespace(const std::string& line);
 std::string pretty_json(const std::string& line); // TODO: implement using parsing functions
 //std::string pretty_json_tree(const std::string& line);
 
+std::string_view extract_field(std::string_view key) const;
+std::string_view extract_index(std::size_t index) const;
+
+mutable_view extract_field(std::string_view key);
+mutable_view extract_index(std::size_t index);
 
 #endif//__PARSING_HPP__
