@@ -74,5 +74,69 @@ TEST(RemoveWhitespace, RemovesCorrectly)
     EXPECT_EQ(remove_whitespace(str), "jfklsda;fbdajs\"kglj\rsaiof; dsa\nfd\"sajl") << "Failed to remove unquoted whitespace characters from 'jf klsda;fb\tdajs\"kglj\rsaiof; dsa\nfd\"sa\rjl'";
 }
 
+TEST(NextDelim, WithinObject)
+{
+    std::string str = R"({"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":[1,2,3,4,5],"Key 4":null})";
+    std::size_t start = 1; // skip initial '{'
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 8) << R"(Failed to locate ':' at index 8 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 9;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 18) << R"(Failed to locate ',' at index 18 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 19;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 47) << R"(Failed to locate ':' at index 47 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 48;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 95) << R"(Failed to locate ',' at index 95 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 96;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 103) << R"(Failed to locate ':' at index 103 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 104;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 115) << R"(Failed to locate ',' at index 115 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 116;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 123) << R"(Failed to locate ':' at index 123 in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+    start = 124;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, std::string_view::npos) << R"(Failed to return std::string_view::npos when no more delimiters in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+}
 
+TEST(NextDelim, WithinArray)
+{
+    std::string str = R"(["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1","Key 2":42},null])";
+    std::size_t start = 1;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 14) << R"(Failed to locate ',' at index 14 in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
+    start = 15;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 43) << R"(Failed to locate ',' at index 43 in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
+    start = 44;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 51) << R"(Failed to locate ',' at index 51 in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
+    start = 52;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 56) << R"(Failed to locate ',' at index 56 in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
+    start = 57;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, 87) << R"(Failed to locate ',' at index 87 in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
+    start = 88;
+    start = next_delim(str, start);
+    EXPECT_EQ(start, std::string_view::npos) << R"(Failed to return std::string::npos when no more delimiters in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
+}
 
+TEST(ExtractData, ExtractField)
+{
+    std::string_view str{R"({"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null})"};
+
+    EXPECT_EQ(extract_field(str, "Object"), R"({"Field 1":"Foobar","Field 2":123.45,"Field 3":true})") << R"(Failed to properly extract 'Object' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
+
+}
+
+/*
+TEST(ExtractData, ExtractIndex)
+{
+
+}
+*/

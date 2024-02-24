@@ -1,5 +1,7 @@
 #include "json.hpp"
-
+#include "parsing.hpp"
+#include "error.hpp"
+#include "verification.hpp"
 
 // ------------------------
 // Constructors
@@ -10,7 +12,7 @@ json::Json::Json() : m_type(Type::Undefined) {  }
 json::Json::Json(const std::string& line)
 {
     m_contents = remove_whitespace(line);
-    switch (m_contents)
+    switch (m_contents.front())
     {
         case '{':
             m_type = Type::Object;
@@ -18,9 +20,6 @@ json::Json::Json(const std::string& line)
         case '[':
             m_type = Type::Array;
             break;
-                    double get_double(std::string_view key) const;
-                    double get_double(index index) const;
-                    
         default:
             throw json::wrong_type("String passed to Json::Json() does not specify an object or array");
     }
@@ -62,13 +61,13 @@ bool json::Json::contains(const std::string& key) const
 
 json::index json::Json::size() const
 {
-    if (m_type == json::Json::Array)
+    if (m_type == json::Type::Array)
     {
         // count fields
         return 0;
     }
 
-    if (m_type == json::Json::Object)
+    if (m_type == json::Type::Object)
     {
         // count fields
         return 0;
@@ -85,19 +84,20 @@ json::Type json::Json::type() const
 json::Type json::Json::type(std::string_view key) const
 {
     // get type from iterator
-    return Json::Type::Undefined;
+    return json::Type::Undefined;
 }
 
 json::Type json::Json::type(index index) const
 {
     // get type from iterator
-    return Json::Type::Undefined;
+    return json::Type::Undefined;
 }
 
 // ------------------------
 // Accessors
 // ------------------------
 
+/*
 json::Json json::Json::get_object(std::string_view key) const
 {
 
@@ -173,4 +173,4 @@ bool is_null(json::index index) const
 {
 	
 }
-
+*/

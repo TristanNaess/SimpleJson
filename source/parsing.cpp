@@ -4,6 +4,9 @@
 
 // When it would affect the parsing, it is assumed that all whitespace not in strings has been removed before parsing
 
+// --------------------------------------------------------
+// add concatination of string like types in other orders
+// --------------------------------------------------------
 std::string operator+(const char* line1, const std::string& line2)
 {
     std::string res;
@@ -31,6 +34,9 @@ std::string operator+(const std::string& line1, std::string_view line2)
     return res;
 }
 
+// --------------------------------------------------------
+// find matching character considering syntax of json
+// --------------------------------------------------------
 std::size_t match_quote(std::string_view line, std::size_t index)
 {
     // The guards shouldn't be necessary, since use is purely internal. Move checks to outside function later
@@ -120,9 +126,34 @@ std::size_t find_unquoted(std::string_view line, char character, std::size_t ind
         }
         index++;
     }
-    return std::string::npos;
+    return std::string_view::npos;
 }
 
+std::size_t next_delim(std::string_view line, std::size_t start)
+{
+    for (; start < line.size(); start++)
+    {
+        switch (line[start])
+        {
+            case '"':
+                start = match_quote(line, start);
+                break;
+            case '{':
+            case '[':
+                start = match_bracket(line, start);
+                break;
+            case ',':
+            case ':':
+                return start;
+                break;
+        }
+    }
+    return std::string_view::npos;
+}
+
+// --------------------------------------------------------
+// remove leading, trailing whitespace not in string
+// --------------------------------------------------------
 std::string remove_whitespace(const std::string& line)
 {
     std::string result;
@@ -151,4 +182,36 @@ std::string remove_whitespace(const std::string& line)
     }
     result.shrink_to_fit();
     return result;
+}
+
+// --------------------------------------------------------
+// extract substring for requested data
+// --------------------------------------------------------
+std::string_view extract_field(std::string_view line, std::string_view key)
+{
+    // This assumes the string is pre-checked to be an object string
+    line.remove_prefix(1);
+    line.remove_suffix(1);
+
+    std::size_t start = 0;
+    std::size_t end;
+    std::string_view field;
+    std::string_view temp_key;
+    while ((end = find_unquoted(line, ',', start)) != std::string_view::npos)
+    {
+        field = line.substr(start, end-start);
+        temp_key = field.substr(start+1, find_unquoted(field, ':')-1); // trim quotes while we're here
+        if (temp_key == key) return field;
+    }
+    
+    field = line.substr(start);
+    temp_key = field.substr(start+1, find_unquoted(field, ':')-1);
+    if (temp_key == key) return field;
+
+    throw json::out_of_range("No field matching key" + key);
+}
+
+std::string_view extract_index(std::string_view line, std::size_t index)
+{
+    throw json::out_of_range("Not implemented");    
 }

@@ -91,8 +91,10 @@ namespace json
             Type type(std::string_view key) const;
             Type type(index index) const;
 
+            /*
             iterator begin();
             iterator end();
+            */
 
             // TODO
             // make later change to templated version so:
