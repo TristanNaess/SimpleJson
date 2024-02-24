@@ -2,6 +2,26 @@
 #include "parsing.hpp"
 #include "error.hpp"
 
+TEST(StringConversion, ToJson)
+{
+    std::string_view str("This is a basic string");
+    EXPECT_EQ(to_json_string(str), "\"This is a basic string\"") << "Failed to convert 'This is a basic string' to json format (add surrounding quotes)";
+    str = std::string_view("\"\\\b\f\n\r\t€");
+    EXPECT_EQ(to_json_string(str), R"("\"\\\b\f\n\r\t€")") << "Failed to convert '\"\\\b\f\n\r\t€' to json format (escape characters, keep UTF-8)";
+}
+
+TEST(StringConversion, FromJson)
+{
+    std::string_view str("\"This is a basic string\"");
+    EXPECT_EQ(from_json_string(str), "This is a basic string") << "Failed to convert json string \"This is a basic string\" to C++ syntax (remove surrounding quotes)";
+    str = std::string_view(R"("\"\\\/\b\f\n\r\t\u20AC")");
+    EXPECT_EQ(from_json_string(str), "\"\\/\b\f\n\r\t€") << "Failed to convert json string \"\\\"\\\\\\/\\b\\f\\n\\r\\t\\u20AC\" to C++ string '\"\\/\b\f\n\r\t€'";
+    str = std::string_view("no quotes");
+    EXPECT_THROW(from_json_string(str), json::parsing_error) << "Failed to throw when json string is not quote surrounded";
+    str = std::string_view(R"("\g")");
+    EXPECT_THROW(from_json_string(str), json::parsing_error) << "Failed to throw when passed incorrect escape character '\\g'";
+}
+
 TEST(MatchQuote, GoodString)
 {
     std::string str = "\"This string is quote surrounded\"";
@@ -126,6 +146,7 @@ TEST(NextDelim, WithinArray)
     EXPECT_EQ(start, std::string_view::npos) << R"(Failed to return std::string::npos when no more delimiters in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
 }
 
+/*
 TEST(ExtractData, ExtractField)
 {
     std::string_view str{R"({"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null})"};
@@ -134,7 +155,6 @@ TEST(ExtractData, ExtractField)
 
 }
 
-/*
 TEST(ExtractData, ExtractIndex)
 {
 

@@ -34,6 +34,146 @@ std::string operator+(const std::string& line1, std::string_view line2)
     return res;
 }
 
+//---------------------------------------------------------
+// Conversion between C++ and json string representations
+//---------------------------------------------------------
+
+std::string to_json_string(std::string_view line)
+{
+    std::string str;
+    str.reserve(line.size() + 2); // space for surrounding quotes, assume no escape characters most of the time
+    str.push_back('"');
+
+    for (auto c : line)
+    {
+        switch (c)
+        {
+            case '"':
+                str.append("\\\"");
+                break;
+            case '\\':
+                str.append("\\\\");
+                break;
+            case '\b':
+                str.append("\\b");
+                break;
+            case '\f':
+                str.append("\\f");
+                break;
+            case '\n':
+                str.append("\\n");
+                break;
+            case '\r':
+                str.append("\\r");
+                break;
+            case '\t':
+                str.append("\\t");
+                break;
+            default:
+                str.push_back(c);
+        }
+    }
+
+    str.push_back('"');
+    return str;
+}
+
+std::string from_json_string(std::string_view line)
+{
+    std::string str;
+    str.reserve(line.size());
+    if (line.front() != '"' || line.back() != '"') throw json::parsing_error("Missing inital or final quote in json string: '" + line + '\'');
+
+    line.remove_prefix(1);
+    line.remove_suffix(1);
+
+    bool escaped = false;
+    unsigned int codepoint = 0;
+    unsigned int nibble;
+    for (auto itr = line.begin(); itr != line.end(); itr++)
+    {
+        if (escaped)
+        {
+            escaped = false;
+            switch (*itr)
+            {
+                case '"':
+                    str.push_back('"');
+                    break;
+                case '\\':
+                    str.push_back('\\');
+                    break;
+                case '/':
+                    str.push_back('/');
+                    break;
+                case 'b':
+                    str.push_back('\b');
+                    break;
+                case 'f':
+                    str.push_back('\f');
+                    break;
+                case 'n':
+                    str.push_back('\n');
+                    break;
+                case 'r':
+                    str.push_back('\r');
+                    break;
+                case 't':
+                    str.push_back('\t');
+                    break;
+                case 'u':
+                    // convert 4 char codepoint to uint
+                    // This was exhaustively checked with a separate program
+                    for (std::size_t i = 0; i < 4; i++)
+                    {
+                        itr++;
+                        if (!((*itr >= '0' && *itr <= '9') || (*itr >= 'a' && *itr <= 'f') || (*itr >= 'A' && *itr <= 'F')))
+                        {
+                            throw json::parsing_error("Bad character in UTF codepoint in: '" + line + '\'');
+                        }
+                        nibble = *itr - '0';
+                        if (nibble > 9)
+                        {
+                            nibble &= 0xdf; // clear shifted capital bit
+                            nibble -= 0x07;
+                        }
+                        codepoint = (codepoint << 4) | nibble;
+                    }
+
+                    // convert uint to UTF-8
+                    // This hasn't been fully checked, but I ran a decent number of lookups and it seems to work
+                    if (codepoint < 0x0080)
+                    {
+                        str.push_back(codepoint);
+                        break;
+                    }
+                    if (codepoint < 0x0800)
+                    {
+                        str.push_back((codepoint >> 6) | 0xc0);
+                        str.push_back((codepoint & 0x3f) | 0x80);
+                        break;
+                    }
+                    // we're ignoring 0x10000 and higher, since JSON only specifies up to 4 hex chars in a codepoint
+                    str.push_back((codepoint >> 12) | 0xe0);
+                    str.push_back(((codepoint >> 6) & 0x3f) | 0x80);
+                    str.push_back((codepoint & 0x3f) | 0x80);
+                    break;
+                default:
+                    throw json::parsing_error("Bad escape character in json string: '" + line + '\'');
+            }
+            continue;
+        }
+        if (*itr == '\\')
+        {
+            escaped = true;
+            continue;
+        }
+        str.push_back(*itr);
+    }
+
+    return str;
+}
+
 // --------------------------------------------------------
 // find matching character considering syntax of json
 // --------------------------------------------------------

@@ -12,6 +12,13 @@ std::string operator+(const char* line1, const std::string& line2);
 std::string operator+(const char* line1, std::string_view line2);
 std::string operator+(const std::string& line1, std::string_view line2);
 
+// Convert between C++ and json representations of strings
+// Expects surrounding quotes on JSON strings, not on C++ strings
+// any UTF-16 codepoints are converted to UTF-8 by from_json_string() and are kept as UTF-8 by to_json_string()
+// '/' is also not escaped when converted to json
+std::string to_json_string(std::string_view line);
+std::string from_json_string(std::string_view line);
+
 // Given initial quote, return's ending quote location or throws json::parsing_error
 std::size_t match_quote(std::string_view line, std::size_t index);
 
