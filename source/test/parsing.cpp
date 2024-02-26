@@ -96,6 +96,8 @@ TEST(RemoveWhitespace, RemovesCorrectly)
 
 TEST(NextDelim, WithinObject)
 {
+    EXPECT_EQ(next_delim("{}",0), std::string_view::npos) << "Failed to return std::string_view::npos when searching empty object";
+
     std::string str = R"({"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":[1,2,3,4,5],"Key 4":null})";
     std::size_t start = 1; // skip initial '{'
     start = next_delim(str, start);
@@ -125,6 +127,8 @@ TEST(NextDelim, WithinObject)
 
 TEST(NextDelim, WithinArray)
 {
+    EXPECT_EQ(next_delim("[]",0), std::string_view::npos) << "Failed to return std::string_view::npos when searching empty array";
+
     std::string str = R"(["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1","Key 2":42},null])";
     std::size_t start = 1;
     start = next_delim(str, start);
