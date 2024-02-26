@@ -300,6 +300,28 @@ std::size_t next_delim(std::string_view line, std::size_t start)
     return std::string_view::npos;
 }
 
+std::size_t next_delim(std::string_view line, std::size_t start, char delim)
+{
+    // I should probably assert delim is either ':' or ','
+    // or implement with a delimiter enum class, but as long as the function is internal only, it's probably fine
+    for (; start < line.size(); start++)
+    {
+        switch (line[start])
+        {
+            case '"':
+                start = match_quote(line, start);
+                break;
+            case '[':
+            case '{':
+                start = match_bracket(line, start);
+            break;
+            default:
+            if (line[start] == delim) return start;
+        }
+    }
+    return std::string_view::npos;
+}
+
 // --------------------------------------------------------
 // remove leading, trailing whitespace not in string
 // --------------------------------------------------------
@@ -338,14 +360,56 @@ std::string remove_whitespace(const std::string& line)
 // --------------------------------------------------------
 std::string_view extract_field(std::string_view line, std::string_view key)
 {
+    // convert key to json string
+    key = to_json_string(key);
+
     // This assumes the string is pre-checked to be an object string
     line.remove_prefix(1);
     line.remove_suffix(1);
 
-    throw std::runtime_error("Not Implemented");
+    std::size_t start = 0;
+    std::size_t end;
+    std::string_view temp_key;
+
+    while ((end = next_delim(line, start)) != std::string_view::npos)
+    {
+        // skip fields while searching
+        if (line[end] == ',')
+        {
+            start = end+1;
+            continue;
+        }
+
+        temp_key = line.substr(start, end-start);
+        start = end+1;
+
+        if (temp_key == key)
+        {
+            end = next_delim(line, start);
+            return line.substr(start, end-start);
+        }
+    }
+    throw json::out_of_range("No field matching key: '" + key + "' in object");
 }
 
 std::string_view extract_index(std::string_view line, std::size_t index)
 {
-    throw std::runtime_error("Not implemented");    
+    line.remove_prefix(1);
+    line.remove_suffix(1);
+
+    std::size_t start = 0;
+    std::size_t end;
+    
+    // consume index-1 fields
+    for (std::size_t i = 0; i < index; i++)
+    {
+        end = next_delim(line, start);
+        if (end == std::string_view::npos)
+        {
+            throw json::out_of_range("Index is out of range");
+        }
+        start = end+1;
+    }
+    end = next_delim(line, start);
+    return line.substr(start, end-start);
 }

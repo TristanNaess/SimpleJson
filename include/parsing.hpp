@@ -36,6 +36,8 @@ std::size_t find_unquoted(std::string_view line, char character, std::size_t ind
 // Locates next delimiter character (: or ,) including start index that is not within a quoted string and is at the same bracket nesting level as the start index
 // Returns std::string_view::npos if no further delimiters found
 std::size_t next_delim(std::string_view line, std::size_t start);
+// search for specific delimiter
+std::size_t next_delim(std::string_view line, std::size_t start, char delim);
 
 // Removes all whitespace characters that are not inside a quote surrounded string
 // Whitespace includes: " \n\r\t" as specified by JSON

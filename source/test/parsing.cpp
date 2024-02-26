@@ -130,7 +130,7 @@ TEST(NextDelim, WithinObject)
     start = 1;
     std::size_t end = next_delim(str, start, ',');
     EXPECT_EQ(end, 18) << "Failed to locate first ',' at index 18";
-    std::string_view field = str.substr(start,end - start);
+    std::string_view field = std::string_view(str).substr(start, end-start);
     EXPECT_EQ(next_delim(field,0,':'), 7) << "Failed to locate ':' at index 7 in k-v pair: '\"Key 1\":\"Value 1\"'";
 }
 
