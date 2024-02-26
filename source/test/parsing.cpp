@@ -146,17 +146,27 @@ TEST(NextDelim, WithinArray)
     EXPECT_EQ(start, std::string_view::npos) << R"(Failed to return std::string::npos when no more delimiters in '["hello world",["this","was","a","triumph"],3.14159,true,{"Key 1":"Value 1"."Key 2":42},null]')";
 }
 
-/*
 TEST(ExtractData, ExtractField)
 {
     std::string_view str{R"({"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null})"};
 
     EXPECT_EQ(extract_field(str, "Object"), R"({"Field 1":"Foobar","Field 2":123.45,"Field 3":true})") << R"(Failed to properly extract 'Object' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
-
+    EXPECT_EQ(extract_field(str, "Array"), R"([1,2,3,4,5])") << R"(Failed to properly extract 'Array' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
+    EXPECT_EQ(extract_field(str, "String"), "\"Hello there.\"") << R"(Failed to properly extract 'String' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
+    EXPECT_EQ(extract_field(str, "Number"), "3.14159") << R"(Failed to properly extract 'Number' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
+    EXPECT_EQ(extract_field(str, "Bool"), "true") << R"(Failed to properly extract 'Bool' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
+    EXPECT_EQ(extract_field(str, "\"Null\""), "null") << R"(Failed to properly extract '"Null"' field from '{"Object":{"Field 1":"Foobar","Field 2":123.45,"Field 3":true},"Array":[1,2,3,4,5],"String":"Hello there.","Number":3.14159,"Bool":true,"\"Null\"":null}')";
+    EXPECT_THROW(extract_field(str, "Null"), json::out_of_range) << "Failed to throw json::out_of_range when non-existant field is requested";
 }
 
 TEST(ExtractData, ExtractIndex)
 {
-
+    std::string_view str{R"([{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null])"};
+    EXPECT_EQ(extract_index(str,0),R"({"Key 1":"foobar","Key 2":true,"Key 3":42})") << R"(Failed to properly extract element 0 from '[{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null]')";
+    EXPECT_EQ(extract_index(str,1),"[3]") << R"(Failed to properly extract element 1 from '[{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null]')";
+    EXPECT_EQ(extract_index(str,2),"true") << R"(Failed to properly extract element 2 from '[{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null]')";
+    EXPECT_EQ(extract_index(str,3),"\"String\"") << R"(Failed to properly extract element 3 from '[{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null]')";
+    EXPECT_EQ(extract_index(str,4),"6.022e23") << R"(Failed to properly extract element 4 from '[{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null]')";
+    EXPECT_EQ(extract_index(str,5),"null") << R"(Failed to properly extract element 5 from '[{"Key 1":"foobar","Key 2":true,"Key 3":42},[3],true,"String",6.022e23,null]')";
+    EXPECT_THROW(extract_index(str,6), json::out_of_range) << "Failed to throw json::out_of_range when index greater than size is requested";
 }
-*/

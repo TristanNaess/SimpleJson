@@ -342,25 +342,10 @@ std::string_view extract_field(std::string_view line, std::string_view key)
     line.remove_prefix(1);
     line.remove_suffix(1);
 
-    std::size_t start = 0;
-    std::size_t end;
-    std::string_view field;
-    std::string_view temp_key;
-    while ((end = find_unquoted(line, ',', start)) != std::string_view::npos)
-    {
-        field = line.substr(start, end-start);
-        temp_key = field.substr(start+1, find_unquoted(field, ':')-1); // trim quotes while we're here
-        if (temp_key == key) return field;
-    }
-    
-    field = line.substr(start);
-    temp_key = field.substr(start+1, find_unquoted(field, ':')-1);
-    if (temp_key == key) return field;
-
-    throw json::out_of_range("No field matching key" + key);
+    throw std::runtime_error("Not Implemented");
 }
 
 std::string_view extract_index(std::string_view line, std::size_t index)
 {
-    throw json::out_of_range("Not implemented");    
+    throw std::runtime_error("Not implemented");    
 }
