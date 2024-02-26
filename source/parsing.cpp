@@ -369,27 +369,27 @@ std::string_view extract_field(std::string_view line, std::string_view key)
 
     std::size_t start = 0;
     std::size_t end;
+    std::size_t kv_delim;
     std::string_view temp_key;
+    std::string_view field;
 
-    while ((end = next_delim(line, start)) != std::string_view::npos)
+    // iterate through k-v pairs
+    do
     {
-        // skip fields while searching
-        if (line[end] == ',')
-        {
-            start = end+1;
-            continue;
-        }
+        end = next_delim(line, start, ',');
+        field = std::string_view(line).substr(start, end-start);
+        kv_delim = next_delim(field, 0, ':');
 
-        temp_key = line.substr(start, end-start);
-        start = end+1;
-
+        temp_key = field.substr(0, kv_delim);
         if (temp_key == key)
         {
-            end = next_delim(line, start);
-            return line.substr(start, end-start);
+            return field.substr(kv_delim+1); // I hope this references back to line
         }
+        start = end+1;
     }
-    throw json::out_of_range("No field matching key: '" + key + "' in object");
+    while (end != std::string_view::npos);
+    throw json::out_of_range("No field matching key: '" + key + '\'');
+
 }
 
 std::string_view extract_index(std::string_view line, std::size_t index)
