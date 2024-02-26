@@ -82,6 +82,7 @@ std::string from_json_string(std::string_view line)
 {
     std::string str;
     str.reserve(line.size());
+    // not sure if this is necessary, since all json will be verified on load
     if (line.front() != '"' || line.back() != '"') throw json::parsing_error("Missing inital or final quote in json string: '" + line + '\'');
 
     line.remove_prefix(1);
@@ -124,18 +125,26 @@ std::string from_json_string(std::string_view line)
                 case 'u':
                     // convert 4 char codepoint to uint
                     // This was exhaustively checked with a separate program
+                    // I think this is cleaner than the previous, readability-wise
                     for (std::size_t i = 0; i < 4; i++)
                     {
                         itr++;
-                        if (!((*itr >= '0' && *itr <= '9') || (*itr >= 'a' && *itr <= 'f') || (*itr >= 'A' && *itr <= 'F')))
+                        auto c = *itr;
+                        if (c >= '0' && c <= '9')
                         {
-                            throw json::parsing_error("Bad character in UTF codepoint in: '" + line + '\'');
+                            nibble = c - '0';
                         }
-                        nibble = *itr - '0';
-                        if (nibble > 9)
+                        else
                         {
-                            nibble &= 0xdf; // clear shifted capital bit
-                            nibble -= 0x07;
+                            c &= 0xdf;
+                            if (c >= 'A' && c <= 'F')
+                            {
+                                nibble = c - 'A' + 10;
+                            }
+                            else
+                            {
+                                throw json::parsing_error("Bad character in UTF codepoint in: " + line + '\'');
+                            }
                         }
                         codepoint = (codepoint << 4) | nibble;
                     }
