@@ -96,8 +96,10 @@ TEST(RemoveWhitespace, RemovesCorrectly)
 
 TEST(NextDelim, WithinObject)
 {
+    // empty case
     EXPECT_EQ(next_delim("{}",0), std::string_view::npos) << "Failed to return std::string_view::npos when searching empty object";
 
+    // generic next delimiter
     std::string str = R"({"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":[1,2,3,4,5],"Key 4":null})";
     std::size_t start = 1; // skip initial '{'
     start = next_delim(str, start);
@@ -123,6 +125,13 @@ TEST(NextDelim, WithinObject)
     start = 124;
     start = next_delim(str, start);
     EXPECT_EQ(start, std::string_view::npos) << R"(Failed to return std::string_view::npos when no more delimiters in '{"Key 1":"Value 1","Key: containing,delimiters":{"Key 2.1":1,"Key 2.2":[1,2,3],"Key 2.3":false},"Key 3":null}')";
+
+    // specific delimiter
+    start = 1;
+    std::size_t end = next_delim(str, start, ',');
+    EXPECT_EQ(end, 18) << "Failed to locate first ',' at index 18";
+    std::string_view field = str.substr(start,end - start);
+    EXPECT_EQ(next_delim(field,0,':'), 7) << "Failed to locate ':' at index 7 in k-v pair: '\"Key 1\":\"Value 1\"'";
 }
 
 TEST(NextDelim, WithinArray)
