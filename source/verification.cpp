@@ -325,3 +325,33 @@ json::result verify_null(std::string_view line)
     if (line == "null" || line == "Null") return json::result();
     return json::result{ "Error verifying null. did not match [Nn]ull: " + line };
 }
+
+bool is_object(std::string_view line)
+{
+    return (line.front() == '{');
+}
+
+bool is_array(std::string_view line)
+{
+    return (line.front() == '[');
+}
+
+bool is_number(std::string_view line)
+{
+    return !(line.front() != '+' && line.front() != '-' && (line.front() < '0' || line.front() > '9'));
+}
+
+bool is_string(std::string_view line)
+{
+    return (line.front() == '"');
+}
+
+bool is_bool(std::string_view line)
+{
+    return (line.front() == 't' || line.front() == 'f' || line.front() == 'T' || line.front() == 'F');
+}
+
+bool is_null(std::string_view line)
+{
+    return (line.front() == 'n' || line.front() == 'N');
+}

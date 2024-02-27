@@ -269,3 +269,4 @@ TEST(VerifyJson, BadNull)
     EXPECT_FALSE(res) << "Accepted misspelled 'null': '" << str << "' message: " << res.message();
 }
 
+// No tests for is_*() functions, as they are the same as the beginnings of the verify_*() functions
