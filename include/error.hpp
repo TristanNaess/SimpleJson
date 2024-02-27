@@ -47,4 +47,11 @@ namespace json
     };
 }
 
+class todo : public std::runtime_error
+{
+    public:
+        explicit todo(const std::string& message = "") : std::runtime_error(message) {  }
+        explicit todo(const char* message = "") : std::runtime_error(message) {  }
+};
+
 #endif//__ERROR_HPP__
