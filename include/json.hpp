@@ -26,6 +26,7 @@ namespace json
             Json();
             Json(const std::string& line);
             Json(std::string_view line);
+            Json(const char* line);
 
             /* IMPLEMENT AFTER GETTING BASIC ACCESS WORKING MANUALLY
 
