@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://schema.omg.org/spec/UML/2.1">
+  <xmi:Documentation exporter="umbrello uml modeller 2.39.0 (Applications 24.05.0) http://umbrello.kde.org" exporterVersion="2.0.4"/>
+  <uml:Model xmi:id="m1" name="UML Model">
+    <packagedElement xmi:type="uml:Stereotype" xmi:id="folder" name="folder"/>
+    <packagedElement xmi:type="uml:Stereotype" xmi:id="dataType" name="dataType"/>
+    <packagedElement xmi:type="uml:Model" xmi:id="Logical_View" name="Logical View">
+      <uml:Package xmi:id="Datatypes" name="Datatypes" stereotype="folder">
+        <packagedElement xmi:type="uml:DataType" xmi:id="u1wB5L1yXPcmp" name="char" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="u7VmzWGR5ECeh" name="int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="u7ysFaj93suHy" name="float" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uK1kBeNoIRYsb" name="double" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uAg017NiWyRcs" name="bool" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uqJmn9qO0W0jP" name="string" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uOdUSMGQhS4A3" name="unsigned char" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="ujI2TM7ZUEqBr" name="signed char" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uGqgLgHbALhc0" name="unsigned int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="u61PRi3vzRAwz" name="signed int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="ueBycQJUSz9tv" name="short int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uRVZPKjabL62e" name="unsigned short int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uioZp052kEe17" name="signed short int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uUXMPEQ6K0jj7" name="long int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="utDgkyc7VmyuM" name="signed long int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uTaijfwsjnR1D" name="unsigned long int" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="uXFeZyt2wyOZ8" name="long double" stereotype="dataType"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="ut1cO2UmxCFay" name="wchar_t" stereotype="dataType"/>
+      </uml:Package>
+      <packagedElement xmi:type="uml:Class" xmi:id="u0ojZWovwEjYM" name="json">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="uQm4tMSvKMCtn" name="m_contents" comment="String containing the json data. Parsed whenever data is requested" visibility="private" type="uqJmn9qO0W0jP"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="uY45oh7BM0WBv" name="m_type" visibility="private" type="uQwCMFphSFHbE"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="u4vAvOQRZLiQL" name="Json"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uhzDZWMqhx37o" name="Json">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="u2sDrXs47RX1g" name="line" visibility="private" type="uSPJHQk6zPR8W" value=""/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uDsQNK1LCsDlt" name="Json">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="uaVnCAjaXZgVK" name="line" visibility="private" type="uM4Rw92KVkOm8" value=""/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uIT7Gp4qVfMcP" name="Json">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="usuR6Miq6eYVR" name="line" visibility="private" type="ua4gJkzmQKspt" value=""/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uNSHZEXkh9myW" name="keys" comment="Returns a vector containing the objects keys.&#10;throws error if json is not Object type" isQuery="true"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="u54aQ3Spzc3tg" name="contains" comment="Returns whether a specific key exists&#10;Throws if json is not Object type" isQuery="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="uJySuMgzkEkcp" type="uAg017NiWyRcs" direction="return"/>
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="u9e7dOLX1Pn8J" name="key" visibility="private" type="uM4Rw92KVkOm8" value=""/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="u3faqieJ95eT8" name="contains" comment="Returns whether a specific key exists&#10;Throws if json is not Object type" isQuery="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="u8OJwarriapr1" type="uAg017NiWyRcs" direction="return"/>
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="u39p1XY1qYNFM" name="key" visibility="private" type="uSPJHQk6zPR8W" value=""/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uJke1B24UOEnd" name="size" comment="Returns the size of array&#10;Throws if json is not Array type" isQuery="true"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uoUNjQpEtPkKE" name="type" comment="Returns the type of json, either Json::Object or Json::Array (for now)" isQuery="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="uCP3UyPmv0aB5" type="uQwCMFphSFHbE" direction="return"/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uU48rkcXgO1Wm" name="type" comment="Returns the type of an object member&#10;Throws if json is not Object type or key does not exist" isQuery="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="uOTNiOEKcRHeM" type="uQwCMFphSFHbE" direction="return"/>
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="uSfpxfedOmo1U" name="key" visibility="private" type="uM4Rw92KVkOm8" value=""/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="uVkqVxcyMJYCm" name="type" comment="Returns the type of an array element&#10;Throws if json is not Array type or index out of range" isQuery="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="u96cbfTkqFpqJ" type="uQwCMFphSFHbE" direction="return"/>
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="uZd7ycY4VKywp" name="index" visibility="private" type="uMoBNDfoEV3pS" value=""/>
+        </ownedOperation>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="uQwCMFphSFHbE" name="Type"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="uSPJHQk6zPR8W" name="const std::string&amp;"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="uM4Rw92KVkOm8" name="std::string_view"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="ua4gJkzmQKspt" name="const char*"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="uMoBNDfoEV3pS" name="index"/>
+      <xmi:Extension extender="umbrello">
+        <diagrams resolution="96">
+          <diagram xmi.id="uAbI9R9YXMFIe" name="class diagram" type="1" documentation="" backgroundcolor="#ffffff" fillcolor="#ffffc0" font="Noto Sans,10,-1,0,50,0,0,0,0,0" griddotcolor="#d3d3d3" linecolor="#990000" linewidth="0" textcolor="#000000" usefillcolor="1" showattribassocs="1" showatts="1" showattsig="1" showops="1" showopsig="1" showpackage="1" showpubliconly="0" showscope="1" showstereotype="2" localid="-1" showgrid="0" snapgrid="0" snapcsgrid="0" snapx="25" snapy="25" zoom="93.5762" canvasheight="800" canvaswidth="1100" isopen="1">
+            <widgets>
+              <classwidget xmi.id="u0ojZWovwEjYM" localid="urglL4To25nqx" textcolor="#000000" linecolor="#990000" linewidth="0" usefillcolor="1" usesdiagramfillcolor="0" usesdiagramusefillcolor="0" fillcolor="#ffffc0" font="Noto Sans,10,-1,5,50,0,0,0,0,0,Regular" autoresize="0" x="175.139" y="246.364" width="342" height="266" isinstance="0" showstereotype="2" showoperations="1" showpubliconly="0" showopsigs="601" showpackage="1" showscope="1" showattributes="1" showattsigs="601"/>
+            </widgets>
+            <messages/>
+            <associations/>
+          </diagram>
+        </diagrams>
+      </xmi:Extension>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Model" xmi:id="Use_Case_View" name="Use Case View"/>
+    <packagedElement xmi:type="uml:Model" xmi:id="Component_View" name="Component View"/>
+    <packagedElement xmi:type="uml:Model" xmi:id="Deployment_View" name="Deployment View"/>
+    <packagedElement xmi:type="uml:Model" xmi:id="Entity_Relationship_Model" name="Entity Relationship Model"/>
+  </uml:Model>
+  <xmi:Extension extender="umbrello">
+    <docsettings viewid="uAbI9R9YXMFIe" documentation="" uniqueid="u96cbfTkqFpqJ"/>
+    <listview>
+      <listitem id="Views" type="800" open="1">
+        <listitem id="Component_View" type="821" open="1"/>
+        <listitem id="Deployment_View" type="827" open="1"/>
+        <listitem id="Entity_Relationship_Model" type="836" open="1"/>
+        <listitem id="Logical_View" type="801" open="1">
+          <listitem id="uAbI9R9YXMFIe" type="807" label="class diagram" open="0"/>
+          <listitem id="ua4gJkzmQKspt" type="813" open="1"/>
+          <listitem id="uSPJHQk6zPR8W" type="813" open="1"/>
+          <listitem id="Datatypes" type="830" open="0">
+            <listitem id="uAg017NiWyRcs" type="829" open="0"/>
+            <listitem id="uK1kBeNoIRYsb" type="829" open="0"/>
+            <listitem id="u7ysFaj93suHy" type="829" open="0"/>
+            <listitem id="u7VmzWGR5ECeh" type="829" open="0"/>
+            <listitem id="uXFeZyt2wyOZ8" type="829" open="0"/>
+            <listitem id="uUXMPEQ6K0jj7" type="829" open="0"/>
+            <listitem id="ueBycQJUSz9tv" type="829" open="0"/>
+            <listitem id="ujI2TM7ZUEqBr" type="829" open="0"/>
+            <listitem id="u61PRi3vzRAwz" type="829" open="0"/>
+            <listitem id="utDgkyc7VmyuM" type="829" open="0"/>
+            <listitem id="uioZp052kEe17" type="829" open="0"/>
+            <listitem id="uqJmn9qO0W0jP" type="829" open="0"/>
+            <listitem id="uOdUSMGQhS4A3" type="829" open="0"/>
+            <listitem id="uGqgLgHbALhc0" type="829" open="0"/>
+            <listitem id="uTaijfwsjnR1D" type="829" open="0"/>
+            <listitem id="uRVZPKjabL62e" type="829" open="0"/>
+            <listitem id="ut1cO2UmxCFay" type="829" open="0"/>
+          </listitem>
+          <listitem id="uMoBNDfoEV3pS" type="813" open="1"/>
+          <listitem id="u0ojZWovwEjYM" type="813" open="1">
+            <listitem id="u3faqieJ95eT8" type="815" open="0"/>
+            <listitem id="u54aQ3Spzc3tg" type="815" open="0"/>
+            <listitem id="u4vAvOQRZLiQL" type="815" open="0"/>
+            <listitem id="uIT7Gp4qVfMcP" type="815" open="0"/>
+            <listitem id="uhzDZWMqhx37o" type="815" open="0"/>
+            <listitem id="uDsQNK1LCsDlt" type="815" open="0"/>
+            <listitem id="uNSHZEXkh9myW" type="815" open="0"/>
+            <listitem id="uQm4tMSvKMCtn" type="814" open="0"/>
+            <listitem id="uY45oh7BM0WBv" type="814" open="0"/>
+            <listitem id="uJke1B24UOEnd" type="815" open="0"/>
+            <listitem id="uoUNjQpEtPkKE" type="815" open="0"/>
+            <listitem id="uVkqVxcyMJYCm" type="815" open="0"/>
+            <listitem id="uU48rkcXgO1Wm" type="815" open="0"/>
+          </listitem>
+          <listitem id="uM4Rw92KVkOm8" type="813" open="1"/>
+          <listitem id="uQwCMFphSFHbE" type="813" open="1"/>
+        </listitem>
+        <listitem id="Use_Case_View" type="802" open="1"/>
+      </listitem>
+    </listview>
+    <codegeneration>
+      <codegenerator language="C++"/>
+    </codegeneration>
+  </xmi:Extension>
+</xmi:XMI>
