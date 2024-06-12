@@ -2,13 +2,17 @@
 #define __JSON_HPP__
 
 #include <string>
-#include <string_view> // c++17
 #include <vector>
 #include <iterator>
 
+// include other library headers
+#include "error.hpp"
+//#include "mutable_view.hpp"
+#include "parsing.hpp"
+#include "verification.hpp"
+
 namespace json
 {
-    using index = std::size_t;
     enum class Type
     {
         Object,
@@ -20,77 +24,24 @@ namespace json
         Undefined
     };
     
-    class Json // TODO Make sure all std::string_view args have matching const std::string&
+    class json // TODO change std::string& to std::string_view where possible
     {
         public:
-            Json();
-            Json(const std::string& line);
-            Json(std::string_view line);
-            Json(const char* line);
+            json();
+            json(const std::string& line);
+            json(const char* line);
 
-            /* IMPLEMENT AFTER GETTING BASIC ACCESS WORKING MANUALLY
-
-            // This may be fully implemented as a STL like iterator later, but I don't know if the non-standard dereferences will make that possible.
-            //      May have to add a generic wrapper type to implement dereferencing
-            // Actual implementations of functions will go here, while the versions in the Json class will use iterators to find the data
-            class iterator
-            {
-                public:
-                    // will parse the string to find the remaining locations
-                    iterator(char* start);
-                    
-                    std::string key() const;
-                    Type type() const;
-                    Type type(std::string_view key) const;
-                    Type type(index index) const;
-
-                    // Read and write accessors
-                    // To be templated later
-                    Json get_object(std::string_view key) const;
-                    Json get_object(index index) const;
-
-                    Json get_array(std::string_view key) const;
-                    Json get_array(index index) const;
-
-                    std::string get_string(std::string_view key) const;
-                    std::string get_string(index index) const;
-                    
-                    double get_double(std::string_view key) const;
-                    double get_double(index index) const;
-                    
-                    int get_int(std::string_view key) const;
-                    int get_int(index index) const;
-                    
-                    bool get_bool(std::string_view key) const;
-                    bool get_bool(index index) const;
-                    
-                    bool is_null(std::string_view key) const;
-                    bool is_null(index index) const;
-                    
-                    // operators
-
-
-                private:
-                    char* key_start;
-                    char* key_end;
-                    char* val_start;
-                    char* val_end;
-            };
-            */
 
             // object specific
             std::vector<std::string> keys() const;
-            bool contains(std::string_view key) const;
             bool contains(const std::string& key) const;
 
             // array specific
             index size() const;
 
-            // returns type, either json::Object or json::Array
             Type type() const;
-            // deduces and returns type of data at key/index
-            Type type(std::string_view key) const;
-            Type type(index index) const;
+            Type type(const std::string& key) const;
+            Type type(std::size_t index) const;
 
             /*
             iterator begin();
@@ -105,31 +56,103 @@ namespace json
             // read operations return copy
             // throw json::wrong_type for accessor not matching data type
             // throw json::out_of_range for index > size
-            Json get_object(std::string_view key) const;
-            Json get_object(index index) const;
+            json::const_object_accessor get_object(const std::string& key) const;
+            json::object_accessor get_object(const std::string& key);
+            
+            json::const_object_accessor get_object(std::size_t index) const;
+            json::object_accessor get_object(std::size_t index);
 
-            Json get_array(std::string_view key) const;
-            Json get_array(index index) const;
 
-            std::string get_string(std::string_view key) const;
-            std::string get_string(index index) const;
+            json::const_array_accessor get_array(const std::string& key) const;
+            json::array_accessor get_array(const std::string& key);
 
-            double get_double(std::string_view key) const;
-            double get_double(index index) const;
+            json::const_array_accessor get_array(std::size_t index) const;
+            json::array_accessor(std::size_t index);
 
-            int get_int(std::string_view key) const;
-            int get_int(index index) const;
 
-            bool get_bool(std::string_view key) const;
-            bool get_bool(index index) const;
+            std::string get_string(const std::string& key) const;
+            json::string_accessor get_string(const std::string& key);
 
-            bool is_null(std::string_view key) const;
-            bool is_null(index index) const;
+            std::string get_string(std::size_t index) const;
+            json::string_accessor get_string(std::size_t index);
+
+            // see if double version can be replaced with an accessor that has int and double casts
+            double get_number(const std::string& key) const;
+            json::number_accessor get_number(const std::string& key);
+
+            double get_number(std::size_t index) const;
+            json::number_accessor get_number(std::size_t index);
+
+
+            bool get_bool(const std::string& key) const;
+            json::bool_accessor get_bool(const std::string& key);
+
+            bool get_bool(std::size_t index) const;
+            json::bool_accessor get_bool(std::size_t index);
+
+
+            bool is_null(const std::string& key) const;
+            json::null_accessor is_null(const std::string& key);
+
+            bool is_null(std::size_t index) const;
+            json::null_accessor is_null(std::size_t index);
 
 
         private:
             std::string m_contents;
             Type m_type;
+
+
+        public: // move this up later when needed
+            /* IMPLEMENT AFTER GETTING BASIC ACCESS WORKING MANUALLY
+
+            // This may be fully implemented as a STL like iterator later, but I don't know if the non-standard dereferences will make that possible.
+            //      May have to add a generic wrapper type to implement dereferencing
+            // Actual implementations of functions will go here, while the versions in the json class will use iterators to find the data
+            class Iterator
+            {
+                public:
+                    // will parse the string to find the remaining locations
+                    Iterator(char* start);
+                    
+                    std::string key() const;
+                    Type type() const;
+                    Type type(const std::string& key) const;
+                    Type type(std::size_t index) const;
+
+                    // Read and write accessors
+                    // To be templated later
+                    json get_object(const std::string& key) const;
+                    json get_object(std::size_t index) const;
+
+                    json get_array(const std::string& key) const;
+                    json get_array(std::size_t index) const;
+
+                    std::string get_string(const std::string& key) const;
+                    std::string get_string(std::size_t index) const;
+                    
+                    double get_double(const std::string& key) const;
+                    double get_double(std::size_t index) const;
+                    
+                    int get_int(const std::string& key) const;
+                    int get_int(std::size_t index) const;
+                    
+                    bool get_bool(const std::string& key) const;
+                    bool get_bool(std::size_t index) const;
+                    
+                    bool is_null(const std::string& key) const;
+                    bool is_null(std::size_t index) const;
+                    
+                    // operators
+
+
+                private:
+                    char* key_start;
+                    char* key_end;
+                    char* val_start;
+                    char* val_end;
+            };
+            */
     };
 }
 
