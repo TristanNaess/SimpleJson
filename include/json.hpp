@@ -10,6 +10,8 @@
 //#include "mutable_view.hpp"
 #include "parsing.hpp"
 #include "verification.hpp"
+#include "accessor.hpp"
+
 
 namespace json
 {
@@ -76,7 +78,7 @@ namespace json
             std::string get_string(std::size_t index) const;
             json::string_accessor get_string(std::size_t index);
 
-            // see if double version can be replaced with an accessor that has int and double casts
+            // when templating the get function replace with std::integral and std::floating_point to cover all types
             double get_number(const std::string& key) const;
             json::number_accessor get_number(const std::string& key);
 
@@ -97,6 +99,10 @@ namespace json
             bool is_null(std::size_t index) const;
             json::null_accessor is_null(std::size_t index);
 
+            // if types can be changed, use a overwrite type function
+            // something like
+            // template <typename T> change_type(T data)
+
 
         private:
             std::string m_contents;
@@ -108,7 +114,6 @@ namespace json
 
             // This may be fully implemented as a STL like iterator later, but I don't know if the non-standard dereferences will make that possible.
             //      May have to add a generic wrapper type to implement dereferencing
-            // Actual implementations of functions will go here, while the versions in the json class will use iterators to find the data
             class Iterator
             {
                 public:
