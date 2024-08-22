@@ -8,7 +8,7 @@ TARGET := main
 TEST_TARGET := test_main
 LIBRARIES := 
 DEFINITIONS := 
-FLAGS = -g -std=c++17 -Wall -Werror
+FLAGS = -g -std=c++20 -Wall -Werror
 
 # ---------------------------------------
 # Probably don't need to change
@@ -29,7 +29,7 @@ DEFS = $(patsubst %, -D%, $(DEFINITIONS))
 IPATHS = $(patsubst %, -I%, $(IDIRS))
 CFLAGS = $(FLAGS) $(IPATHS) $(LIBS) $(DEFS)
 
-TEST_FLAGS = $(filter-out -lpthread, $(filter-out -g, $(CFLAGS))) -lgtest -lgtest_main -lpthread
+TEST_FLAGS = $(filter-out -lpthread, $(filter-out -g, $(CFLAGS))) -lgtest -lgtest_main -lpthread -DTESTING
 
 # get source and object file names
 SOURCE = $(notdir $(wildcard $(SDIR)/*.cpp))
