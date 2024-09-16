@@ -1,0 +1,14 @@
+I was getting lost in the parsing and felt I wasn't making progress, so I decided to kinda restart with the same ideas for architecture.
+I don't know whether I want to make a class that holds the parsing operations inside the json class or not, and
+whether that is useful when I can just put those functions in utils.hpp as they are now.
+The main benefit I see is that the whitespace removal can be done in the constructor, but the same can be said about the json constructor.
+
+I need to look more into how iterators are implemented.
+Since the data can't be simply dereferenced it may require the iterator have a bunch of non-standard functions that make it incompatable with
+the standard algorithms.
+If the iterator returns an accessor that might work, since all the other behavior is handled by the dereferenced type.
+
+At this point the accessor has casting operators for all standard defined numeric types, and assignment operators for the largest.
+I don't know if I should explicitly define all assignment operators as well, or if there is a way to handle it with templating.
+There is also the issue of the cstdint's which I use with some regularity for the known bit size.
+Since the cast from accessor prevents further casting of the types, those conversions may have to be added, or explicitly neglected.
