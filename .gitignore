@@ -8,3 +8,4 @@ source/*.deactivate
 source/test/*.deactivate
 include/*.deactivate
 TODO.txt
+documentation/UML_Diagram.xmi

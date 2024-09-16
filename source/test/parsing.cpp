@@ -71,7 +71,7 @@ TEST(Public, RemoveWhitespace)
     EXPECT_EQ(remove_whitespace(data), std::string("ThisString\"Cont\vains \tQuot\ne Su\frrou\rnded\"Whitespace")) << "Failed to ignore whitespace in quotes";
 }
 
-TEST(Public, GetData)
+TEST(Public, GetField)
 {
     std::string data = R"({"Key 1":"value 1","Key 2":{"Key 2.1":"foobar","Key 2.2":3.14159},"Key 3":["a","b","c","d","e"],"Key 4":-12.345e67})";
 
@@ -94,4 +94,9 @@ TEST(Public, GetData)
     field = get_field(view);
     EXPECT_EQ(field.key, "\"Key 4\"") << "Failed to extract fourth key";
     EXPECT_EQ(std::string(field.val.begin, field.val.end), "-12.345e67") << "Failed to extract fourth value";
+}
+
+TEST(Public, GetData)
+{
+
 }
