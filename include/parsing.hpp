@@ -1,11 +1,10 @@
 #include <string>
 #include <utility>
-// #include "mutable_view.hpp" // add once implemented. Use pair of iterators for now
 
 // This will need to be expanded into a proper class with mutex locking when multithreading support is added
 struct mut_view
 {
-    std::string data;
+    std::string& data;
     std::string::iterator begin, end;
 };
 
@@ -20,7 +19,7 @@ bool verify_json();
 
 // returns a copy of the string with all non-string whitespace removed
 // necessary for all data parsing including verification
-std::string remove_whitespace(std::string& s) noexcept;
+std::string remove_whitespace(const std::string& s) noexcept;
 
 // return field starting at start, search until end
 // ASSUMES JSON HAS BEEN VERIFIED
@@ -35,12 +34,30 @@ double              get_double(mut_view data);
 float               get_float(mut_view data);
 long long           get_llint(mut_view data);
 long                get_lint(mut_view data);
-int                 get_int (mut_view data);
-unsigned long long  get_ullint (mut_view data);
-unsigned long       get_ulint (mut_view data);
-unsigned int        get_uint (mut_view data);
+int                 get_int(mut_view data);
+signed char         get_char(mut_view data);
+unsigned long long  get_ullint(mut_view data);
+unsigned long       get_ulint(mut_view data);
+unsigned int        get_uint(mut_view data);
+unsigned char       get_uchar(mut_view data);
+bool                get_bool(mut_view data);
 
-bool                get_bool (mut_view data);
+// insert value into data string
+
+mut_view insert_string(mut_view data, const std::string& val);
+mut_view insert_ldouble(mut_view data, long double val);
+mut_view insert_double(mut_view data, double val);
+mut_view insert_float(mut_view data, float val);
+mut_view insert_llint(mut_view data, long long val);
+mut_view insert_lint(mut_view data, long val);
+mut_view insert_int(mut_view data, int val);
+mut_view insert_char(mut_view data, signed char val);
+mut_view insert_ullint(mut_view data, unsigned long long val);
+mut_view insert_ulint(mut_view data, unsigned long val);
+mut_view insert_uint(mut_view data, unsigned int val);
+mut_view insert_uchar(mut_view data, unsigned char val);
+mut_view insert_bool(mut_view data, bool val);
+
 
 // expose internal functions for tests
 #ifdef TESTING
