@@ -117,62 +117,62 @@ namespace json
 
     accessor& accessor::operator=(long double num)
     {
-        throw todo{"TODO: accessor::operator=(long dnum)"};
+        throw todo{"TODO: accessor::operator=(long double)"};
     }
 
     accessor& accessor::operator=(double num)
     {
-        throw todo{"TODO: accessor::operator=(dnum)"};
+        throw todo{"TODO: accessor::operator=(double)"};
     }
 
     accessor& accessor::operator=(float num)
     {
-        throw todo{"TODO: accessor::operator=(fnum)"};
+        throw todo{"TODO: accessor::operator=(float)"};
     }
 
     accessor& accessor::operator=(unsigned long long int num)
     {
-        throw todo{"TODO: accessor::operator=(unsigned long long inum)"};
+        throw todo{"TODO: accessor::operator=(unsigned long long int)"};
     }
 
     accessor& accessor::operator=(unsigned long int num)
     {
-        throw todo{"TODO: accessor::operator=(unsigned long inum)"};
+        throw todo{"TODO: accessor::operator=(unsigned long int)"};
     }
 
     accessor& accessor::operator=(unsigned int num)
     {
-        throw todo{"TODO: accessor::operator=(unsigned inum)"};
+        throw todo{"TODO: accessor::operator=(unsigned int)"};
     }
 
     accessor& accessor::operator=(unsigned char num)
     {
-        throw todo{"TODO: accessor::operator=(unsigned cnum)"};
+        throw todo{"TODO: accessor::operator=(unsigned char)"};
     }
 
     accessor& accessor::operator=(long long int num)
     {
-        throw todo{"TODO: accessor::operator=(long long inum)"};
+        throw todo{"TODO: accessor::operator=(long long int)"};
     }
 
     accessor& accessor::operator=(long int num)
     {
-        throw todo{"TODO: accessor::operator=(long inum)"};
+        throw todo{"TODO: accessor::operator=(long int)"};
     }
 
     accessor& accessor::operator=(int num)
     {
-        throw todo{"TODO: accessor::operator=(inum)"};
+        throw todo{"TODO: accessor::operator=(int)"};
     }
 
     accessor& accessor::operator=(char num)
     {
-        throw todo{"TODO: accessor::operator=(cnum)"};
+        throw todo{"TODO: accessor::operator=(char)"};
     }
 
     accessor& accessor::operator=(bool boolean)
     {
-        throw todo{"TODO: accessor::operator=(bboolean)"};
+        throw todo{"TODO: accessor::operator=(bool)"};
     }
 
 
