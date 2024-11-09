@@ -12,3 +12,7 @@ At this point the accessor has casting operators for all standard defined numeri
 I don't know if I should explicitly define all assignment operators as well, or if there is a way to handle it with templating.
 There is also the issue of the cstdint's which I use with some regularity for the known bit size.
 Since the cast from accessor prevents further casting of the types, those conversions may have to be added, or explicitly neglected.
+
+Insertion and deletion operators need to be added, I don't want the subscript operator to serve as implicit insertion like in std::map, since that isn't expected behavior
+
+I also need to decide whether changing the type of a field should be allowed, and if so whether it should be an explicit change or implicit to write access
