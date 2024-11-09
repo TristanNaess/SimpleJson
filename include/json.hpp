@@ -39,6 +39,8 @@ namepsace json
             // general
             Type type() noexcept;
 
+            // TODO: Need to add a set to null function
+
             // write operators; throw json::wrong_type
             accessor& operator=(const std::string& str);
             accessor& operator=(const char* str);
@@ -75,6 +77,8 @@ namepsace json
             accessor operator[](const char* key);
             accessor operator[](std::size_t index);
 
+            // TODO: Need to add insert and delete operators (keep explicit; std::map::operator[] inserting is stupid)
+
         private:
             //json& m_parent_json;
             std::string& m_data; // see if this is enough, or if I need the json&
@@ -98,7 +102,7 @@ namepsace json
             bool contains(const char* key);         // json::wrong_type
 
             // array data
-            std::size_t size(); // json::wrong_type
+            std::size_t size(); // json::wrong_type, could arguably return the number of fields in the object instead of throwing
 
             // general
             Type type() noexcept;

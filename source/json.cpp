@@ -9,7 +9,7 @@ namespace json
 
     json::json()
     {
-        throw todo{"TODO: json::json()"};
+        m_type = Type::Null;
     }
 
     json::json(const std::string& key)
