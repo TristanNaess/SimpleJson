@@ -60,21 +60,85 @@ TEST(Json, ArrayQueries)
 
 TEST(Accessor, ReadQueries)
 {
-    // ----------------------------
-    //  Object access
-    // ----------------------------
-
-    json::json data{ "{\"String Data\": \"Foobar\", \"Numeric Data\": -123, \"Boolean Data\": true, \"Object data\": {\"Key 1\": \"Foo\", \"Key 2\": \"Bar\", \"Key 3\": \"Baz\"}, \"Array Data\": [1, 2, 3, 4, 5], \"Null Data\": null}" };
+    // Top level Object data
+    json::json data{ "{\"String Data\": \"Foobar\", \"Integer Data\": -123, \"Float Data\": 5.794e-12, \"Boolean Data\": true, \"Object Data\": {\"Key 1\": \"Foo\", \"Key 2\": \"Bar\", \"Key 3\": \"Baz\"}, \"Array Data\": [1, 2, 3, 4, 5], \"Null Data\": null}" };
 
     // String
     EXPECT_EQ(data["String Data"].type(), json::Type::String) << "Failed to recognize string data";
     EXPECT_EQ(data["String Data"], "Foobar") << "Failed to extract string data";
 
     // Numeric
-    EXPECT_EQ(data["Numeric Data"].type(), json::Type::Number) << "Failed to recognize numeric data";
-    EXPECT_EQ(data["Numeric Data"], -123) << "Failed to extract numeric data"; // this may not compile, since it may not be able to choose a numeric type.
-    // double val = data["Numeric Data"];
+    EXPECT_EQ(data["Integer Data"].type(), json::Type::Number) << "Failed to recognize integer as numeric data";
+    EXPECT_EQ(data["Integer Data"], -123) << "Failed to extract integer data"; // this may not compile, since it may not be able to choose a numeric type.
+    //int val = data["Integer Data"];
     //EXPECT_EQ(val, -123) << "Failed to extract numeric data"; // alternative version if the above fails
 
+    EXPECT_EQ(data["Float Data"].type(), json::Type::Number) << "Failed to recognize floating point as numeric data";
+    EXPECT_DOUBLE_EQ(data["Float Data"], 5.794e-12) << "Failed to extract floating point data";
+    //double d_val = data["Float Data"];
+    //EXPECT_DOUBLE_EQ(d_val, 5.794e-12) << "Failed to extract floating point data";
 
+    // I should probably test the other numeric types
+
+    // Boolean
+    EXPECT_EQ(data["Boolean Data"].type(), json::Type::Boolean) << "Failed to recognize boolean data";
+    EXPECT_EQ(data["Boolean Data"], true) << "Failed to extract boolean data";
+
+    // Null
+    EXPECT_EQ(data["Null Data"].type(), json::Type::Null) << "Failed to recognize null data";
+
+    // Sub-object
+    EXPECT_EQ(data["Object Data"].type(), json::Type::Object) << "Failed to recognize object data";
+    EXPECT_EQ(data["Object Data"]["Key 2"].type(), json::Type::String) << "Failed to recognize string type in sub-object";
+    EXPECT_EQ(data["Object Data"]["Key 2"], "Bar") << "Failed to extract string from sub-object";
+
+    // Sub-array
+    EXPECT_EQ(data["Array Data"].type(), json::Type::Array) << "Failed to recognize array data";
+    EXPECT_EQ(data["Array Data"][3].type(), json::Type::Number) << "Failed to recognize number type in sub-array";
+    EXPECT_EQ(data["Array Data"][3], 4) << "Failed to extract integer from sub-array"; // again, if this doesn't work
+    //val = data["Array Data"][3];
+    //EXPECT_EQ(val, 4) << "Failed to extract integer from sub-array";
+
+    // Top level Array data
+    json::json array_data{ "[\"This\", \"was\", \"a\", \"triumph\", \"I'm\", \"making\", \"a\", \"note\", \"here:\", \"Huge\", \"Success\"]" };
+    EXPECT_EQ(array_data[9].type(), json::Type::String) << "Failed to recognize string in array";
+    EXPECT_EQ(array_data[9], "Huge") << "Failed to extract string from array";
+}
+
+TEST(Accessor, WriteQueries)
+{
+    // Top level Object
+    json::json data{ "{\"String\": \"Foobar\", \"Number\": 0, \"Boolean\": false, \"Object\": {\"Key 1\": \"Text\", \"Key 2\": 3}, \"Array\": [true, false, true, true]}" };
+
+    // String
+    data["String"] = "Hello there";
+    EXPECT_EQ(data["String"], "Hello there") << "Failed to update string field";
+
+    // Numeric
+    data["Number"] = 42;
+    EXPECT_EQ(data["Number"], 42) << "Failed to update number as integer";
+    data["Number"] = 6.022e23;
+    EXPECT_DOUBLE_EQ(data["Number"], 6.022e23) << "Failed to update number as floating point;
+
+    // Boolean
+    data["Boolean"] = true;
+    EXPECT_EQ(data["Boolean"], true) << "Failed to update boolean field";
+
+    // no Null, since it requires a type change and thus has to be changed through delete then insert
+
+    // Sub-object
+    data["Object"]["Key 2"] = -9.81;
+    EXPECT_DOUBLE_EQ(data["Object"]["Key 2"], -9.81) << "Failed to update number field in sub-object";
+
+    // Sub-array
+    data["Array"][2] = false;
+    EXPECT_EQ(data["Array"][2], false) << "Failed to update boolean field in sub-array";
+
+    // Top level Array
+    json::json array_data{ "[\"This\", \"was\", \"a\", \"triumph\", \"I'm\", \"making\", \"a\", \"note\", \"here:\", \"Huge\", \"Success\"]" };
+
+    array_data[3] = "triumph.";
+    EXPECT_EQ(array_data[3], "triumph.") << "Failed to update string field in array";
+
+    EXPECT_THROW(data["Object"] = "foobar", json::wrong_type) << "Failed to throw correct error when trying to change type while updating";
 }
