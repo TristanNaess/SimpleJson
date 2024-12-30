@@ -14,7 +14,7 @@
 // seek end of quoted field
 // assumes at start of quoted string
 // returns iterator to final quote
-std::string::iterator skip_quotes(std::string::iterator start, std::string::iterator end) noexcept
+std::string::const_iterator skip_quotes(std::string::const_iterator start, std::string::const_iterator end) noexcept
 {
     while (start != end)
     {
@@ -24,7 +24,7 @@ std::string::iterator skip_quotes(std::string::iterator start, std::string::iter
     }
     return start;
 }
-std::string::iterator skip_brackets(std::string::iterator start, std::string::iterator end) noexcept
+std::string::const_iterator skip_brackets(std::string::const_iterator start, std::string::const_iterator end) noexcept
 {
     char open = *start;
     char close;
@@ -41,6 +41,7 @@ std::string::iterator skip_brackets(std::string::iterator start, std::string::it
     }
     return start;
 }
+/*
 // locate char c between start and end, not within a quoted string and not nested within a deeper structure
 std::string::iterator find_applicable(std::string::iterator start, std::string::iterator end, char c) noexcept
 {
@@ -53,6 +54,7 @@ std::string::iterator find_applicable(std::string::iterator start, std::string::
     }
     return end;
 }
+*/
 
 // ----- specialized -----
 
@@ -60,18 +62,7 @@ std::string::iterator find_applicable(std::string::iterator start, std::string::
 // Header Defined
 // -----------------------------
 
-field get_field(mut_view data) noexcept
-{
-    std::string::iterator delim = find_applicable(data.begin, data.end, ':');
-    data.end = find_applicable(data.begin, data.end, ',');
-    field result;
-    result.key = std::string_view(data.begin, delim);
-    data.begin = delim+1;
-    result.val = data;
-    return result;
-}
-
-std::string remove_whitespace(std::string& s) noexcept
+std::string remove_whitespace(const std::string& s) noexcept
 {
     static std::string whitespace = " \t\n\r\v\f";
     std::string result;

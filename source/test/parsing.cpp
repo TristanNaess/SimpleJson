@@ -32,6 +32,7 @@ TEST(Internals, SkipBrackets)
     EXPECT_EQ(skip_brackets(data.begin() + 3, data.end()), data.begin() + 31) << "Failed to locate closing } at data[31] skipping quote surrounded }";
 }
 
+/*
 TEST(Internals, FindApplicable)
 {
     // unquoted
@@ -54,6 +55,7 @@ TEST(Internals, FindApplicable)
     data = "kljf{dab\"jkdsal;u}vasHbvdjh\"uHbiapd}neHtbgu";
     EXPECT_EQ(find_applicable(data.begin(), data.end(), 'H'), data.begin() + 38) << "Failed to locate 'H' at data[38] ignoring nested H and quote surrounded termainal }";
 }
+*/
 
 // public facing functions
 TEST(Public, RemoveWhitespace)
@@ -69,34 +71,4 @@ TEST(Public, RemoveWhitespace)
 
     data = "This String \"Cont\vains \tQuot\ne Su\frrou\rnded\" Whitespace";
     EXPECT_EQ(remove_whitespace(data), std::string("ThisString\"Cont\vains \tQuot\ne Su\frrou\rnded\"Whitespace")) << "Failed to ignore whitespace in quotes";
-}
-
-TEST(Public, GetField)
-{
-    std::string data = R"({"Key 1":"value 1","Key 2":{"Key 2.1":"foobar","Key 2.2":3.14159},"Key 3":["a","b","c","d","e"],"Key 4":-12.345e67})";
-
-    mut_view view = {data, data.begin() + 1, data.end()-1};
-    auto field = get_field(view);
-    EXPECT_EQ(field.key, "\"Key 1\"") << "Failed to extract first key";
-    EXPECT_EQ(std::string(field.val.begin, field.val.end), "\"value 1\"") << "Failed to extract first value";
-    
-    view.begin = field.val.end + 1;
-    field = get_field(view);
-    EXPECT_EQ(field.key, "\"Key 2\"") << "Failed to extract second key";
-    EXPECT_EQ(std::string(field.val.begin, field.val.end), R"({"Key 2.1":"foobar","Key 2.2":3.14159})") << "Failed to extract second value";
-
-    view.begin = field.val.end + 1;
-    field = get_field(view);
-    EXPECT_EQ(field.key, "\"Key 3\"") << "Failed to extract third key";
-    EXPECT_EQ(std::string(field.val.begin, field.val.end), R"(["a","b","c","d","e"])") << "Failed to extract third value";
-
-    view.begin = field.val.end + 1;
-    field = get_field(view);
-    EXPECT_EQ(field.key, "\"Key 4\"") << "Failed to extract fourth key";
-    EXPECT_EQ(std::string(field.val.begin, field.val.end), "-12.345e67") << "Failed to extract fourth value";
-}
-
-TEST(Public, GetData)
-{
-
 }
