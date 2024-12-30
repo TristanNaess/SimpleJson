@@ -37,7 +37,7 @@ TEST(Json, ObjectQueries)
     EXPECT_TRUE(data.contains("Field 2")) << "Did not return true for known key (c-str)";
 
     // could check std::string version, but it will probably be called by the c-str version anyway
-    EXPECT_FALSE(data.contains("Bad key")) << "Returned true for non-existant key;
+    EXPECT_FALSE(data.contains("Bad key")) << "Returned true for non-existant key";
 }
 
 TEST(Json, ArrayQueries)
@@ -46,7 +46,7 @@ TEST(Json, ArrayQueries)
     json::json object{ "{\"Foo\": \"Bar\"}" };
 
     EXPECT_EQ(data.size(), 5) << "Returned incorrect size from json array";
-5
+
     EXPECT_THROW(object.size(), json::wrong_type) << "Failed to throw when querying size from object";
 }
 
@@ -65,7 +65,7 @@ TEST(Accessor, ReadQueries)
 
     // String
     EXPECT_EQ(data["String Data"].type(), json::Type::String) << "Failed to recognize string data";
-    EXPECT_EQ(data["String Data"], "Foobar") << "Failed to extract string data";
+    EXPECT_EQ(data["String Data"], std::string("Foobar")) << "Failed to extract string data";
 
     // Numeric
     EXPECT_EQ(data["Integer Data"].type(), json::Type::Number) << "Failed to recognize integer as numeric data";
@@ -90,7 +90,7 @@ TEST(Accessor, ReadQueries)
     // Sub-object
     EXPECT_EQ(data["Object Data"].type(), json::Type::Object) << "Failed to recognize object data";
     EXPECT_EQ(data["Object Data"]["Key 2"].type(), json::Type::String) << "Failed to recognize string type in sub-object";
-    EXPECT_EQ(data["Object Data"]["Key 2"], "Bar") << "Failed to extract string from sub-object";
+    EXPECT_EQ(data["Object Data"]["Key 2"], std::string("Bar")) << "Failed to extract string from sub-object";
 
     // Sub-array
     EXPECT_EQ(data["Array Data"].type(), json::Type::Array) << "Failed to recognize array data";
@@ -102,7 +102,7 @@ TEST(Accessor, ReadQueries)
     // Top level Array data
     json::json array_data{ "[\"This\", \"was\", \"a\", \"triumph\", \"I'm\", \"making\", \"a\", \"note\", \"here:\", \"Huge\", \"Success\"]" };
     EXPECT_EQ(array_data[9].type(), json::Type::String) << "Failed to recognize string in array";
-    EXPECT_EQ(array_data[9], "Huge") << "Failed to extract string from array";
+    EXPECT_EQ(array_data[9], std::string("Huge")) << "Failed to extract string from array";
 }
 
 TEST(Accessor, WriteQueries)
@@ -112,13 +112,13 @@ TEST(Accessor, WriteQueries)
 
     // String
     data["String"] = "Hello there";
-    EXPECT_EQ(data["String"], "Hello there") << "Failed to update string field";
+    EXPECT_EQ(data["String"], std::string("Hello there")) << "Failed to update string field";
 
     // Numeric
     data["Number"] = 42;
     EXPECT_EQ(data["Number"], 42) << "Failed to update number as integer";
     data["Number"] = 6.022e23;
-    EXPECT_DOUBLE_EQ(data["Number"], 6.022e23) << "Failed to update number as floating point;
+    EXPECT_DOUBLE_EQ(data["Number"], 6.022e23) << "Failed to update number as floating point";
 
     // Boolean
     data["Boolean"] = true;
@@ -138,7 +138,20 @@ TEST(Accessor, WriteQueries)
     json::json array_data{ "[\"This\", \"was\", \"a\", \"triumph\", \"I'm\", \"making\", \"a\", \"note\", \"here:\", \"Huge\", \"Success\"]" };
 
     array_data[3] = "triumph.";
-    EXPECT_EQ(array_data[3], "triumph.") << "Failed to update string field in array";
+    EXPECT_EQ(array_data[3], std::string("triumph.")) << "Failed to update string field in array";
 
     EXPECT_THROW(data["Object"] = "foobar", json::wrong_type) << "Failed to throw correct error when trying to change type while updating";
 }
+
+/* -- TO BE ADDED ONCE READ AND WRITE ARE FINISHED --
+
+TEST(Accessor, InsertQueries)
+{
+
+}
+
+TEST(Accessor, DeleteQueries)
+{
+
+}
+*/

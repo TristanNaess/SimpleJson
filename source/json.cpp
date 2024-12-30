@@ -71,7 +71,7 @@ namespace json
     //  json::accessor
     // -----------------------------------
 
-    accessor(std::string& data, std::string::iterator front, std::string::iterator back)
+    accessor::accessor(std::string& data, std::string::iterator front, std::string::iterator back) : m_data(data)
     {
         throw todo{"TODO: accessor(std::string&, std::string::iterator, std::string::iterator)"};
     }
@@ -177,67 +177,67 @@ namespace json
 
 
     // read operators; throw json::wrong_type
-    accessor::operator std::string()
+    accessor::operator std::string() const
     {
         throw todo{"TODO: accessor::operator std::string()"};
     }
 
-    accessor::operator long double()
+    accessor::operator long double() const
     {
         throw todo{"TODO: accessor::operator long double()"};
     }
 
-    accessor::operator double()
+    accessor::operator double() const
     {
         throw todo{"TODO: accessor::operator double()"};
     }
 
-    accessor::operator float()
+    accessor::operator float() const
     {
         throw todo{"TODO: accessor::operator float()"};
     }
 
-    accessor::operator unsigned long long int()
+    accessor::operator unsigned long long int() const
     {
         throw todo{"TODO: accessor::operator unsigned long long int()"};
     }
 
-    accessor::operator unsigned long int()
+    accessor::operator unsigned long int() const
     {
         throw todo{"TODO: accessor::operator unsigned long int()"};
     }
 
-    accessor::operator unsigned int()
+    accessor::operator unsigned int() const
     {
         throw todo{"TODO: accessor::operator unsigned int()"};
     }
 
-    accessor::operator unsigned char()
+    accessor::operator unsigned char() const
     {
         throw todo{"TODO: accessor::operator unsigned char()"};
     }
 
-    accessor::operator long long int()
+    accessor::operator long long int() const
     {
         throw todo{"TODO: accessor::operator long long int()"};
     }
 
-    accessor::operator long int()
+    accessor::operator long int() const
     {
         throw todo{"TODO: accessor::operator long int()"};
     }
 
-    accessor::operator int()
+    accessor::operator int() const
     {
         throw todo{"TODO: accessor::operator int()"};
     }
 
-    accessor::operator char()
+    accessor::operator char() const
     {
         throw todo{"TODO: accessor::operator char()"};
     }
 
-    accessor::operator bool()
+    accessor::operator bool() const
     {
         throw todo{"TODO: accessor::operator bool()"};
     }
@@ -258,4 +258,71 @@ namespace json
     {
         throw todo{"TODO: accessor::operator[](std::size_t)"};
     }
+
+    // throw json::wrong_type
+    bool operator==(const accessor& a, const std::string& str)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const std::string& str)"};
+    }
+
+    bool operator==(const accessor& a, const char* str)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const char* str)"};
+    }
+
+    bool operator==(const accessor& a, const long double num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const long double num)"};
+    }
+
+    bool operator==(const accessor& a, const double num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const double num)"};
+    }
+
+    bool operator==(const accessor& a, const float num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const float num)"};
+    }
+
+    bool operator==(const accessor& a, const unsigned long long int num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const unsigned long long int num)"};
+    }
+
+    bool operator==(const accessor& a, const unsigned long int num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const unsigned long int num)"};
+    }
+
+    bool operator==(const accessor& a, const unsigned int num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const unsigned int num)"};
+    }
+
+    bool operator==(const accessor& a, const long long int num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const long long int num)"};
+    }
+
+    bool operator==(const accessor& a, const long int num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const long int num)"};
+    }
+
+    bool operator==(const accessor& a, const int num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const int num)"};
+    }
+
+    bool operator==(const accessor& a, const char num)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const char num)"};
+    }
+
+    bool operator==(const accessor& a, const bool boolean)
+    {
+        throw todo{"TODO: operator==(const accessor& a, const bool boolean)"};
+    }
+
 }

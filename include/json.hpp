@@ -2,10 +2,11 @@
 #define __JSON_HPP__
 
 #include <string>
+#include <vector>
 #include "error.hpp"
 
 
-namepsace json
+namespace json
 {
     enum class Type
     {
@@ -39,7 +40,7 @@ namepsace json
             // general
             Type type() noexcept;
 
-            // TODO: Need to add a set to null function
+            // TODO: Could add a set to null function, but may be better to make explicit delete then insert like changing other types
 
             // write operators; throw json::wrong_type
             accessor& operator=(const std::string& str);
@@ -58,19 +59,19 @@ namepsace json
             accessor& operator=(bool boolean);
 
             // read operators; throw json::wrong_type
-            operator std::string();
-            operator long double();
-            operator double();
-            operator float();
-            operator unsigned long long int();
-            operator unsigned long int();
-            operator unsigned int();
-            operator unsigned char();
-            operator long long int();
-            operator long int();
-            operator int();
-            operator char();
-            operator bool();
+            operator std::string() const;
+            operator long double() const;
+            operator double() const;
+            operator float() const;
+            operator unsigned long long int() const;
+            operator unsigned long int() const;
+            operator unsigned int() const;
+            operator unsigned char() const;
+            operator long long int() const;
+            operator long int() const;
+            operator int() const;
+            operator char() const;
+            operator bool() const;
 
             // subscript operators; throw json::out_of_range, json::wrong_type
             accessor operator[](const std::string& key);
@@ -78,6 +79,21 @@ namepsace json
             accessor operator[](std::size_t index);
 
             // TODO: Need to add insert and delete operators (keep explicit; std::map::operator[] inserting is stupid)
+
+            // It seems the compiler can't cast to type and test equality. Have to add explicit == overload
+            friend bool operator==(const accessor& a, const std::string& str);
+            friend bool operator==(const accessor& a, const char* str);
+            friend bool operator==(const accessor& a, const long double num);
+            friend bool operator==(const accessor& a, const double num);
+            friend bool operator==(const accessor& a, const float num);
+            friend bool operator==(const accessor& a, const unsigned long long int num);
+            friend bool operator==(const accessor& a, const unsigned long int num);
+            friend bool operator==(const accessor& a, const unsigned int num);
+            friend bool operator==(const accessor& a, const long long int num);
+            friend bool operator==(const accessor& a, const long int num);
+            friend bool operator==(const accessor& a, const int num);
+            friend bool operator==(const accessor& a, const char num);
+            friend bool operator==(const accessor& a, const bool boolean);
 
         private:
             //json& m_parent_json;
@@ -87,6 +103,22 @@ namepsace json
             Type m_type;
     };
 
+
+    // Converts and compares
+    // throw json::wrong_type
+    bool operator==(const accessor& a, const std::string& str);
+    bool operator==(const accessor& a, const char* str);
+    bool operator==(const accessor& a, const long double num);
+    bool operator==(const accessor& a, const double num);
+    bool operator==(const accessor& a, const float num);
+    bool operator==(const accessor& a, const unsigned long long int num);
+    bool operator==(const accessor& a, const unsigned long int num);
+    bool operator==(const accessor& a, const unsigned int num);
+    bool operator==(const accessor& a, const long long int num);
+    bool operator==(const accessor& a, const long int num);
+    bool operator==(const accessor& a, const int num);
+    bool operator==(const accessor& a, const char num);
+    bool operator==(const accessor& a, const bool boolean);
 
     class json
     {

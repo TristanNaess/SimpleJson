@@ -47,13 +47,13 @@ namespace json
     };
 }
 
-#ifdef DEBUG
+//#ifdef DEBUG
 class todo : public std::runtime_error
 {
     public:
         explicit todo(const std::string& message = "TODO: Unspecified") : std::runtime_error(message) {  }
         explicit todo(const char* message = "TODO: Unspecified") : std::runtime_error(message) {  }
 };
-#endif//DEBUG
+//#endif//DEBUG
 
 #endif//__ERROR_HPP__

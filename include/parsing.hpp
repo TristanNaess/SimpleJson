@@ -4,7 +4,7 @@
 // This will need to be expanded into a proper class with mutex locking when multithreading support is added
 struct mut_view
 {
-    std::string& data;
+    std::string* data;
     std::string::iterator begin, end;
 };
 
