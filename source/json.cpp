@@ -1,4 +1,5 @@
 #include "json.hpp"
+#include "parsing.hpp"
 
 namespace json
 {
@@ -7,20 +8,32 @@ namespace json
     //  json::json
     // -----------------------------------
 
-    json::json()
+    json::json(Type type)
     {
-        m_type = Type::Null;
+        switch (type)
+        {
+            case Type::Object:
+                m_data = "{}";
+                break;
+            case Type::Array:
+                m_data = "[]";
+                break;
+            default:
+                throw wrong_type{"Top level json object must be array or object data"};
+        }
+        m_type = type;
     }
 
-    json::json(const std::string& key)
+    json::json(const std::string& data)
     {
-        throw todo{"TODO: json::json(const std::string&)"};
+        m_data = remove_whitespace(data);
+        //if (!verify_json(data)) throw parsing_error("Error verifying json data"); TODO: not yet added
+        
+        if (m_data[0] == '{') m_type = Type::Object;
+        else m_type = Type::Array;
     }
 
-    json::json(const char* key)
-    {
-        throw todo{"TODO: json::json(const char*)"};
-    }
+    json::json(const char* data) : json(std::string(data)) {  }
 
     std::vector<std::string> json::keys() // json::wrong_type
     {
@@ -44,7 +57,7 @@ namespace json
 
     Type json::type() noexcept
     {
-        return Type::Null; // would throw todo, but marked noexcept for later
+        return m_type;
     }
 
     accessor json::operator[](const std::string& key) // json::wrong_type, json::out_of_range

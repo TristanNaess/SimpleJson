@@ -124,7 +124,8 @@ namespace json
     {
         public:
             // constructors
-            json();
+            json() = delete;
+            json(Type type);
             json(const std::string& data);
             json(const char* data);
 

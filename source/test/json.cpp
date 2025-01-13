@@ -8,9 +8,13 @@
 // --------------------------
 TEST(Json, Constructor)
 {
-    // default constructor is untested, since it just sets m_type to Type::Null
-    json::json nullobject;
-    EXPECT_EQ(nullobject.type(), json::Type::Null) << "Returned incorrect type for empty json structure (Null)";
+    json::json empty_object{ json::Type::Object };
+    EXPECT_EQ(empty_object.type(), json::Type::Object) << "Returned incorrect type for empty json object";
+
+    json::json empty_array{ json::Type::Array };
+    EXPECT_EQ(empty_array.type(), json::Type::Array) << "Returned incorrect type for empty json array";
+   
+    EXPECT_THROW(json::json bad{ json::Type::String }, json::wrong_type) << "Failed to throw when type is not object or array";
 
     json::json object{ std::string("{\"Foo\": 3.14, \"Bar\": \"Baz Quux\"}") };
     EXPECT_EQ(object.type(), json::Type::Object) << "Returned incorrect type for json object";
