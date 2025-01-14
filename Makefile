@@ -29,7 +29,7 @@ DEFS = $(patsubst %, -D%, $(DEFINITIONS))
 IPATHS = $(patsubst %, -I%, $(IDIRS))
 CFLAGS = $(FLAGS) $(IPATHS) $(LIBS) $(DEFS)
 
-TEST_FLAGS = $(filter-out -lpthread, $(filter-out -g, $(CFLAGS))) -lgtest -lgtest_main -lpthread -DDEBUG
+TEST_FLAGS = $(filter-out -lpthread, $(filter-out -g, $(CFLAGS))) -lgtest -lgtest_main -lpthread -DTESTING
 
 # get source and object file names
 SOURCE = $(notdir $(wildcard $(SDIR)/*.cpp))
