@@ -48,33 +48,34 @@ bool verify_null(const std::string& line)
 }
 
 
+// All is_*() functions assume the data is good, and sans-whitespace
 
 bool is_object(const std::string& line)
 {
-    throw todo("TODO: bool is_object(const std::string&)");
+    return line[0] == '{';
 }
 
 bool is_array(const std::string& line)
 {
-    throw todo("TODO: bool is_array(const std::string&)");
+    return line[0] == '[';
 }
 
 bool is_number(const std::string& line)
 {
-    throw todo("TODO: bool is_num(const std::string&)");
+    return (line[0] == '-' || (line[0] >= '0' && line[0] <= '9'));
 }
 
 bool is_string(const std::string& line)
 {
-    throw todo("TODO: bool is_string(const std::string&)");
+    return line[0] == '"';
 }
 
 bool is_bool(const std::string& line)
 {
-    throw todo("TODO: bool is_bool(const std::string&)");
+    return (line == "true" || line == "false");
 }
 
 bool is_null(const std::string& line)
 {
-    throw todo("TODO: bool is_null(const std::string&)");
+    return line == "null";
 }

@@ -93,20 +93,17 @@ TEST(TypeChecking, IsObject)
 {
     // Objects
     EXPECT_TRUE(is_object("{}")) << "Failed to recognize an empty object";
-    EXPECT_TRUE(is_object(R"({"Key 1": "Value 1", "Key 2": "Value 2"})")) << "Failed to recognize a basic object";
-    EXPECT_TRUE(is_object(R"({"Key 1": 3.14159, "Key 2": {"Key 2.1": "Value 2.1", "Key 2.2": true}, "Key 3": null})")) << "Failed to recognize an object containing another object";
-    EXPECT_TRUE(is_object(R"({"Key 1": 3.14159, "Key 2": ["Val 2.1", 5.5423e-23, false], "Key 3": null})")) << "Failed to recognize an object containing an array";
+    EXPECT_TRUE(is_object(R"({"Key 1":"Value 1","Key 2":"Value 2"})")) << "Failed to recognize a basic object";
+    EXPECT_TRUE(is_object(R"({"Key 1":3.14159,"Key 2":{"Key 2.1":"Value 2.1","Key 2.2":true},"Key 3":null})")) << "Failed to recognize an object containing another object";
+    EXPECT_TRUE(is_object(R"({"Key 1":3.14159,"Key 2":["Val 2.1", 5.5423e-23, false],"Key 3":null})")) << "Failed to recognize an object containing an array";
     EXPECT_TRUE(is_object(R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})")) << "Failed to recognize deeply nested objects";
-    EXPECT_TRUE(is_object("{ \n\r\t\"Key 1\" \n\r\t: \n\r\t\"Val 1\" \n\r\t, \n\r\t, \n\r\t\"Key 2\" \n\r\t: \n\r\t12345 \n\r\t}")) << "Failed to recognize object containing all whitespace characters";
 
     // Arrays
     EXPECT_FALSE(is_object("[]")) << "Accepted array as object";
-    EXPECT_FALSE(is_object("[1, 2, 3, 4, 5]")) << "Accepted array as object";
-    EXPECT_FALSE(is_object("[\"String\", [\"fds\", \"dsafasg\"], true, null, 6.022e23]")) << "Accepted array as object";
-    EXPECT_FALSE(is_object("[1, 2, 3, {\"Key 1\": \"Value 1\", \"Key 2\": 12.345}, 5, 6, 7, 8]")) << "Accepted array as object";
+    EXPECT_FALSE(is_object("[1,2,3,4,5]")) << "Accepted array as object";
+    EXPECT_FALSE(is_object("[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]")) << "Accepted array as object";
+    EXPECT_FALSE(is_object("[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]")) << "Accepted array as object";
     EXPECT_FALSE(is_object("[[[[[[]]]]]]")) << "Accepted array as object";
-    EXPECT_FALSE(is_object("[ \n\r\t12345 \n\r\t, \n\r\t\"String\" \n\r\t, \n\r\tfalse \n\r\t]")) << "Accepted array as object";
-
 
     // Strings
     EXPECT_FALSE(is_object("\"This is a basic string\"")) <<  "Accepted string as object";
@@ -141,19 +138,19 @@ TEST(TypeChecking, IsArray)
 {
     // Objects
     EXPECT_FALSE(is_array("{}")) << "Accepted object as array";
-    EXPECT_FALSE(is_array(R"({"Key 1": "Value 1", "Key 2": "Value 2"})")) << "Accepted object as array";
-    EXPECT_FALSE(is_array(R"({"Key 1": 3.14159, "Key 2": {"Key 2.1": "Value 2.1", "Key 2.2": true}, "Key 3": null})")) << "Accepted object as array";
-    EXPECT_FALSE(is_array(R"({"Key 1": 3.14159, "Key 2": ["Val 2.1", 5.5423e-23, false], "Key 3": null})")) << "Accepted object as array";
+    EXPECT_FALSE(is_array(R"({"Key 1":"Value 1","Key 2":"Value 2"})")) << "Accepted object as array";
+    EXPECT_FALSE(is_array(R"({"Key 1":3.14159,"Key 2":{"Key 2.1":"Value 2.1","Key 2.2":true},"Key 3":null})")) << "Accepted object as array";
+    EXPECT_FALSE(is_array(R"({"Key 1":3.14159,"Key 2":["Val 2.1",5.5423e-23,false],"Key 3":null})")) << "Accepted object as array";
     EXPECT_FALSE(is_array(R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})")) << "Accepted object as array";
-    EXPECT_FALSE(is_array("{ \n\r\t\"Key 1\" \n\r\t: \n\r\t\"Val 1\" \n\r\t, \n\r\t, \n\r\t\"Key 2\" \n\r\t: \n\r\t12345 \n\r\t}")) << "Accepted object as array";
+    EXPECT_FALSE(is_array("{ \n\r\t\"Key 1\" \n\r\t:\n\r\t\"Val 1\" \n\r\t,\n\r\t,\n\r\t\"Key 2\" \n\r\t:\n\r\t12345 \n\r\t}")) << "Accepted object as array";
 
     // Arrays
     EXPECT_TRUE(is_array("[]")) << "Failed to recognize an empty array";
-    EXPECT_TRUE(is_array("[1, 2, 3, 4, 5]")) << "Failed to recognize a basic array of numbers";
-    EXPECT_TRUE(is_array("[\"String\", [\"fds\", \"dsafasg\"], true, null, 6.022e23]")) << "Failed to recognize an array of elements including another array";
-    EXPECT_TRUE(is_array("[1, 2, 3, {\"Key 1\": \"Value 1\", \"Key 2\": 12.345}, 5, 6, 7, 8]")) << "Failed to recognize an array containing an object";
+    EXPECT_TRUE(is_array("[1,2,3,4,5]")) << "Failed to recognize a basic array of numbers";
+    EXPECT_TRUE(is_array("[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]")) << "Failed to recognize an array of elements including another array";
+    EXPECT_TRUE(is_array("[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]")) << "Failed to recognize an array containing an object";
     EXPECT_TRUE(is_array("[[[[[[]]]]]]")) << "Failed to recognize deeply nested arrays";
-    EXPECT_TRUE(is_array("[ \n\r\t12345 \n\r\t, \n\r\t\"String\" \n\r\t, \n\r\tfalse \n\r\t]")) << "Failed to recognize array containing all whitespace characters";
+    EXPECT_TRUE(is_array("[ \n\r\t12345 \n\r\t,\n\r\t\"String\" \n\r\t,\n\r\tfalse \n\r\t]")) << "Failed to recognize array containing all whitespace characters";
 
     // Strings
     EXPECT_FALSE(is_array("\"This is a basic string\"")) <<  "Accepted string as array";
@@ -187,19 +184,17 @@ TEST(TypeChecking, IsString)
 {
     // Objects
     EXPECT_FALSE(is_string("{}")) << "Accepted object as string";
-    EXPECT_FALSE(is_string(R"({"Key 1": "Value 1", "Key 2": "Value 2"})")) << "Accepted object as string";
-    EXPECT_FALSE(is_string(R"({"Key 1": 3.14159, "Key 2": {"Key 2.1": "Value 2.1", "Key 2.2": true}, "Key 3": null})")) << "Accepted object as string";
-    EXPECT_FALSE(is_string(R"({"Key 1": 3.14159, "Key 2": ["Val 2.1", 5.5423e-23, false], "Key 3": null})")) << "Accepted object as string";
+    EXPECT_FALSE(is_string(R"({"Key 1":"Value 1","Key 2":"Value 2"})")) << "Accepted object as string";
+    EXPECT_FALSE(is_string(R"({"Key 1":3.14159,"Key 2":{"Key 2.1":"Value 2.1","Key 2.2":true},"Key 3":null})")) << "Accepted object as string";
+    EXPECT_FALSE(is_string(R"({"Key 1":3.14159,"Key 2":["Val 2.1",5.5423e-23,false],"Key 3":null})")) << "Accepted object as string";
     EXPECT_FALSE(is_string(R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})")) << "Accepted object as string";
-    EXPECT_FALSE(is_string("{ \n\r\t\"Key 1\" \n\r\t: \n\r\t\"Val 1\" \n\r\t, \n\r\t, \n\r\t\"Key 2\" \n\r\t: \n\r\t12345 \n\r\t}")) << "Accepted object as string";
 
     // Arrays
     EXPECT_FALSE(is_string("[]")) << "Accepted array as string";
-    EXPECT_FALSE(is_string("[1, 2, 3, 4, 5]")) << "Accepted array as string";
-    EXPECT_FALSE(is_string("[\"String\", [\"fds\", \"dsafasg\"], true, null, 6.022e23]")) << "Accepted array as string";
-    EXPECT_FALSE(is_string("[1, 2, 3, {\"Key 1\": \"Value 1\", \"Key 2\": 12.345}, 5, 6, 7, 8]")) << "Accepted array as string";
+    EXPECT_FALSE(is_string("[1,2,3,4,5]")) << "Accepted array as string";
+    EXPECT_FALSE(is_string("[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]")) << "Accepted array as string";
+    EXPECT_FALSE(is_string("[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]")) << "Accepted array as string";
     EXPECT_FALSE(is_string("[[[[[[]]]]]]")) << "Accepted array as string";
-    EXPECT_FALSE(is_string("[ \n\r\t12345 \n\r\t, \n\r\t\"String\" \n\r\t, \n\r\tfalse \n\r\t]")) << "Accepted array as string";
 
     // Strings
     EXPECT_TRUE(is_string("\"This is a basic string\"")) <<  "Failed to recognize a basic string";
@@ -232,19 +227,17 @@ TEST(TypeChecking, IsNumber)
 {
     // Objects
     EXPECT_FALSE(is_number("{}")) << "Accepted object as number";
-    EXPECT_FALSE(is_number(R"({"Key 1": "Value 1", "Key 2": "Value 2"})")) << "Accepted object as number";
-    EXPECT_FALSE(is_number(R"({"Key 1": 3.14159, "Key 2": {"Key 2.1": "Value 2.1", "Key 2.2": true}, "Key 3": null})")) << "Accepted object as number";
-    EXPECT_FALSE(is_number(R"({"Key 1": 3.14159, "Key 2": ["Val 2.1", 5.5423e-23, false], "Key 3": null})")) << "Accepted object as number";
+    EXPECT_FALSE(is_number(R"({"Key 1":"Value 1","Key 2":"Value 2"})")) << "Accepted object as number";
+    EXPECT_FALSE(is_number(R"({"Key 1":3.14159,"Key 2":{"Key 2.1":"Value 2.1","Key 2.2":true},"Key 3":null})")) << "Accepted object as number";
+    EXPECT_FALSE(is_number(R"({"Key 1":3.14159,"Key 2":["Val 2.1",5.5423e-23,false],"Key 3":null})")) << "Accepted object as number";
     EXPECT_FALSE(is_number(R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})")) << "Accepted object as number";
-    EXPECT_FALSE(is_number("{ \n\r\t\"Key 1\" \n\r\t: \n\r\t\"Val 1\" \n\r\t, \n\r\t, \n\r\t\"Key 2\" \n\r\t: \n\r\t12345 \n\r\t}")) << "Accepted object as number";
 
     // Arrays
     EXPECT_FALSE(is_number("[]")) << "Accepted array as number";
-    EXPECT_FALSE(is_number("[1, 2, 3, 4, 5]")) << "Accepted array as number";
-    EXPECT_FALSE(is_number("[\"String\", [\"fds\", \"dsafasg\"], true, null, 6.022e23]")) << "Accepted array as number";
-    EXPECT_FALSE(is_number("[1, 2, 3, {\"Key 1\": \"Value 1\", \"Key 2\": 12.345}, 5, 6, 7, 8]")) << "Accepted array as number";
+    EXPECT_FALSE(is_number("[1,2,3,4,5]")) << "Accepted array as number";
+    EXPECT_FALSE(is_number("[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]")) << "Accepted array as number";
+    EXPECT_FALSE(is_number("[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]")) << "Accepted array as number";
     EXPECT_FALSE(is_number("[[[[[[]]]]]]")) << "Accepted array as number";
-    EXPECT_FALSE(is_number("[ \n\r\t12345 \n\r\t, \n\r\t\"String\" \n\r\t, \n\r\tfalse \n\r\t]")) << "Accepted array as number";
 
     // Strings
     EXPECT_FALSE(is_number("\"This is a basic string\"")) <<  "Accepted string as number";
@@ -278,19 +271,17 @@ TEST(TypeChecking, IsBool)
 {
     // Objects
     EXPECT_FALSE(is_bool("{}")) << "Accepted object as bool";
-    EXPECT_FALSE(is_bool(R"({"Key 1": "Value 1", "Key 2": "Value 2"})")) << "Accepted object as bool";
-    EXPECT_FALSE(is_bool(R"({"Key 1": 3.14159, "Key 2": {"Key 2.1": "Value 2.1", "Key 2.2": true}, "Key 3": null})")) << "Accepted object as bool";
-    EXPECT_FALSE(is_bool(R"({"Key 1": 3.14159, "Key 2": ["Val 2.1", 5.5423e-23, false], "Key 3": null})")) << "Accepted object as bool";
+    EXPECT_FALSE(is_bool(R"({"Key 1":"Value 1","Key 2":"Value 2"})")) << "Accepted object as bool";
+    EXPECT_FALSE(is_bool(R"({"Key 1":3.14159,"Key 2":{"Key 2.1":"Value 2.1","Key 2.2":true},"Key 3":null})")) << "Accepted object as bool";
+    EXPECT_FALSE(is_bool(R"({"Key 1":3.14159,"Key 2":["Val 2.1",5.5423e-23,false],"Key 3":null})")) << "Accepted object as bool";
     EXPECT_FALSE(is_bool(R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})")) << "Accepted object as bool";
-    EXPECT_FALSE(is_bool("{ \n\r\t\"Key 1\" \n\r\t: \n\r\t\"Val 1\" \n\r\t, \n\r\t, \n\r\t\"Key 2\" \n\r\t: \n\r\t12345 \n\r\t}")) << "Accepted object as bool";
 
     // Arrays
     EXPECT_FALSE(is_bool("[]")) << "Accepted array as bool";
-    EXPECT_FALSE(is_bool("[1, 2, 3, 4, 5]")) << "Accepted array as bool";
-    EXPECT_FALSE(is_bool("[\"String\", [\"fds\", \"dsafasg\"], true, null, 6.022e23]")) << "Accepted array as bool";
-    EXPECT_FALSE(is_bool("[1, 2, 3, {\"Key 1\": \"Value 1\", \"Key 2\": 12.345}, 5, 6, 7, 8]")) << "Accepted array as bool";
+    EXPECT_FALSE(is_bool("[1,2,3,4,5]")) << "Accepted array as bool";
+    EXPECT_FALSE(is_bool("[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]")) << "Accepted array as bool";
+    EXPECT_FALSE(is_bool("[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]")) << "Accepted array as bool";
     EXPECT_FALSE(is_bool("[[[[[[]]]]]]")) << "Accepted array as bool";
-    EXPECT_FALSE(is_bool("[ \n\r\t12345 \n\r\t, \n\r\t\"String\" \n\r\t, \n\r\tfalse \n\r\t]")) << "Accepted array as bool";
 
     // Strings
     EXPECT_FALSE(is_bool("\"This is a basic string\"")) <<  "Accepted string as bool";
@@ -324,19 +315,17 @@ TEST(TypeChecking, IsNull)
 {
     // Objects
     EXPECT_FALSE(is_null("{}")) << "Accepted object as null";
-    EXPECT_FALSE(is_null(R"({"Key 1": "Value 1", "Key 2": "Value 2"})")) << "Accepted object as null";
-    EXPECT_FALSE(is_null(R"({"Key 1": 3.14159, "Key 2": {"Key 2.1": "Value 2.1", "Key 2.2": true}, "Key 3": null})")) << "Accepted object as null";
-    EXPECT_FALSE(is_null(R"({"Key 1": 3.14159, "Key 2": ["Val 2.1", 5.5423e-23, false], "Key 3": null})")) << "Accepted object as null";
+    EXPECT_FALSE(is_null(R"({"Key 1":"Value 1","Key 2":"Value 2"})")) << "Accepted object as null";
+    EXPECT_FALSE(is_null(R"({"Key 1":3.14159,"Key 2":{"Key 2.1":"Value 2.1","Key 2.2":true},"Key 3":null})")) << "Accepted object as null";
+    EXPECT_FALSE(is_null(R"({"Key 1":3.14159,"Key 2":["Val 2.1",5.5423e-23,false],"Key 3":null})")) << "Accepted object as null";
     EXPECT_FALSE(is_null(R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})")) << "Accepted object as null";
-    EXPECT_FALSE(is_null("{ \n\r\t\"Key 1\" \n\r\t: \n\r\t\"Val 1\" \n\r\t, \n\r\t, \n\r\t\"Key 2\" \n\r\t: \n\r\t12345 \n\r\t}")) << "Accepted object as null";
 
     // Arrays
     EXPECT_FALSE(is_null("[]")) << "Accepted array as null";
-    EXPECT_FALSE(is_null("[1, 2, 3, 4, 5]")) << "Accepted array as null";
-    EXPECT_FALSE(is_null("[\"String\", [\"fds\", \"dsafasg\"], true, null, 6.022e23]")) << "Accepted array as null";
-    EXPECT_FALSE(is_null("[1, 2, 3, {\"Key 1\": \"Value 1\", \"Key 2\": 12.345}, 5, 6, 7, 8]")) << "Accepted array as null";
+    EXPECT_FALSE(is_null("[1,2,3,4,5]")) << "Accepted array as null";
+    EXPECT_FALSE(is_null("[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]")) << "Accepted array as null";
+    EXPECT_FALSE(is_null("[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]")) << "Accepted array as null";
     EXPECT_FALSE(is_null("[[[[[[]]]]]]")) << "Accepted array as null";
-    EXPECT_FALSE(is_null("[ \n\r\t12345 \n\r\t, \n\r\t\"String\" \n\r\t, \n\r\tfalse \n\r\t]")) << "Accepted array as null";
 
     // Strings
     EXPECT_FALSE(is_null("\"This is a basic string\"")) <<  "Accepted string as null";
