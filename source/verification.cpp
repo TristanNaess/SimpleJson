@@ -59,7 +59,7 @@ bool is_array(const std::string& line)
     throw todo("TODO: bool is_array(const std::string&)");
 }
 
-bool is_num(const std::string& line)
+bool is_number(const std::string& line)
 {
     throw todo("TODO: bool is_num(const std::string&)");
 }

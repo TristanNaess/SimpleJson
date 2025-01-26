@@ -18,7 +18,7 @@ bool verify_null(const std::string& line);
 // checks type of verified json, 
 bool is_object(const std::string& line);
 bool is_array(const std::string& line);
-bool is_num(const std::string& line);
+bool is_number(const std::string& line);
 bool is_string(const std::string& line);
 bool is_bool(const std::string& line);
 bool is_null(const std::string& line);
