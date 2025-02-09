@@ -43,7 +43,7 @@ TEST(Verification, VerifyString)
     EXPECT_FALSE(verify_string("No initial quote\"")) << "Accepted a string with no initial quote";
     EXPECT_FALSE(verify_string("\"No final quote")) << "Accepted a string with no final quote";
     EXPECT_FALSE(verify_string(R"("This string has a bad hex\uAG29 escape sequence")")) << "Accepted a string with a bad escape sequence (\\uAG29)";
-    EXPECT_FALSE(verify_string(R"("This string contains a \ncodepoint < 0x0020")")) << "Accepted a string with a codepoint < 0x0020";
+    EXPECT_FALSE(verify_string("\"This string contains a \ncodepoint < 0x0020\"")) << "Accepted a string with a codepoint < 0x0020";
 }
 
 TEST(Verification, VerifyNumber)

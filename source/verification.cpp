@@ -29,7 +29,62 @@ bool verify_array(const std::string& line)
 
 bool verify_string(const std::string& line)
 {
-    throw todo("TODO: bool verify_string(const std::string&)");
+    enum class State { Start, CloseQuote, Codepoint, Esc, UnicodeEsc, X, XX, XXX } state = State::Start;
+
+    for (auto c : line)
+    {
+        switch (state)
+        {
+            case State::Start:
+                switch (c)
+                {
+                    case '"': state = State::Codepoint; break;
+                    default: return false;
+                }
+                break;
+            case State::CloseQuote:
+                return false;
+                break;
+            case State::Codepoint:
+                if (c < 0x0020) return false;
+                if (c > 0x10FFFF) return false;
+                if (c == '\\') state = State::Esc;
+                if (c == '"') state = State::CloseQuote;
+                break; // all other codepoints legal and stay in state
+            case State::Esc:
+                switch (c)
+                {
+                    case 'u': state = State::UnicodeEsc; break;
+                    case '"':
+                    case '\\':
+                    case '/':
+                    case 'b':
+                    case 'n':
+                    case 'f':
+                    case 'r':
+                    case 't': state = State::Codepoint; break;
+                    default: return false;
+                }
+                break;
+            case State::UnicodeEsc:
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) state = State::X;
+                else return false;
+                break;
+            case State::X:
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) state = State::XX;
+                else return false;
+                break;
+            case State::XX:
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) state = State::XXX;
+                else return false;
+                break;
+            case State::XXX:
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) state = State::Codepoint;
+                else return false;
+                break;
+        }
+    }
+    return state == State::CloseQuote;
 }
 
 bool verify_number(const std::string& line)
