@@ -1,6 +1,6 @@
 #include "verification.hpp"
 
-bool verify_json(const std::string& line)
+bool verify_json(std::string_view line)
 {
     if (line.size() == 0) return false; // cannot be empty
 
@@ -17,17 +17,17 @@ bool verify_json(const std::string& line)
     }
 }
 
-bool verify_object(const std::string& line)
+bool verify_object(std::string_view line)
 {
-    throw todo("TODO: bool verify_object(const std::string&)");
+    throw todo("TODO: bool verify_object(std::string_view)");
 }
 
-bool verify_array(const std::string& line)
+bool verify_array(std::string_view line)
 {
-    throw todo("TODO: bool verify_array(const std::string&)");
+    throw todo("TODO: bool verify_array(std::string_view)");
 }
 
-bool verify_string(const std::string& line)
+bool verify_string(std::string_view line)
 {
     enum class State { Start, CloseQuote, Codepoint, Esc, UnicodeEsc, X, XX, XXX } state = State::Start;
 
@@ -87,7 +87,7 @@ bool verify_string(const std::string& line)
     return state == State::CloseQuote;
 }
 
-bool verify_number(const std::string& line)
+bool verify_number(std::string_view line)
 {
     enum class State { Start, Int, Neg, Zero, Dec, ExpSign, Exp } state = State::Start;
 
@@ -215,45 +215,47 @@ bool verify_number(const std::string& line)
     return state == State::Zero || state == State::Int || state == State::Dec || state == State::Exp;
 }
 
-bool verify_bool(const std::string& line)
+bool verify_bool(std::string_view line)
 {
     return line == "true" || line == "false";
 }
 
-bool verify_null(const std::string& line)
+bool verify_null(std::string_view line)
 {
     return line == "null";
 }
 
+// -------------------------------------------------------------------------------------------
 
-// All is_*() functions assume the data is good, and sans-whitespace
 
-bool is_object(const std::string& line)
+// All is_*() functions assume the data is at least a character
+
+bool is_object(std::string_view line)
 {
     return line[0] == '{';
 }
 
-bool is_array(const std::string& line)
+bool is_array(std::string_view line)
 {
     return line[0] == '[';
 }
 
-bool is_string(const std::string& line)
+bool is_string(std::string_view line)
 {
     return line[0] == '"';
 }
 
-bool is_number(const std::string& line)
+bool is_number(std::string_view line)
 {
     return (line[0] == '-' || (line[0] >= '0' && line[0] <= '9'));
 }
 
-bool is_bool(const std::string& line)
+bool is_bool(std::string_view line)
 {
-    return (line == "true" || line == "false");
+    return (line[0] == 't'  || line[0] == 'f');
 }
 
-bool is_null(const std::string& line)
+bool is_null(std::string_view line)
 {
-    return line == "null";
+    return line[0] == 'n';
 }

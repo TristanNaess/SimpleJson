@@ -4,37 +4,25 @@
 #include <string_view>
 #include "error.hpp"
 
-// I'm just going to use const std::string& and bool for now. I'll change to string_view after I get it working and add a mutable version
-// does not expect whitespace to be removed. Actually needs to be called before white space can be removed
+// expects whitespace to be removed
+// at some point change the verify functions to take a index into the full string and return when a passed delimiter is reached
+// this allows for a single pass through the string, rather than finding beginning and end points for the substrings
 
-//  There's a lot of copying going on here in the recursive calls, change to string_view once working
-bool verify_json(const std::string& line);
+// possibly put the declarations behind a testing ifdef. Apart from verify_json() should not be called from outside verification.cpp
 
-bool verify_object(const std::string& line);
-bool verify_array(const std::string& line);
-bool verify_string(const std::string& line);
-bool verify_number(const std::string& line);
-bool verify_bool(const std::string& line);
-bool verify_null(const std::string& line);
+// verifies a passed string is valid JSON
+bool verify_json(std::string_view line);
 
-// checks type of verified json, 
-bool is_object(const std::string& line);
-bool is_array(const std::string& line);
-bool is_string(const std::string& line);
-bool is_number(const std::string& line);
-bool is_bool(const std::string& line);
-bool is_null(const std::string& line);
+bool verify_object(std::string_view line);
+bool verify_array(std::string_view line);
+bool verify_number(std::string_view line);
+bool verify_string(std::string_view line);
+bool verify_bool(std::string_view line);
+bool verify_null(std::string_view line);
 
 /*
-// verifies a passed string is valid JSON
-json::result verify_json(std::string_view line);
-
-json::result verify_object(std::string_view line);
-json::result verify_array(std::string_view line);
-json::result verify_number(std::string_view line);
-json::result verify_string(std::string_view line);
-json::result verify_bool(std::string_view line);
-json::result verify_null(std::string_view line);
+bool verify_object(std::string::iterator start, char stop_char);
+*/
 
 // for checking the type of verified JSON
 bool is_object(std::string_view line);
@@ -43,5 +31,4 @@ bool is_number(std::string_view line);
 bool is_string(std::string_view line);
 bool is_bool(std::string_view line);
 bool is_null(std::string_view line);
-*/
 #endif//__VERIFICATION_HPP__
