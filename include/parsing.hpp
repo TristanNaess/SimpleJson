@@ -8,15 +8,6 @@
 //  Anything else like extracting repeat code and adding iterators can come later.
 // --------------------------------------------------------------------------------
 
-struct field
-{
-    struct view
-    {
-        std::string::iterator begin, end;
-    };
-
-    view key, val;
-};
 
 // extract field starting with begin (this assumes good input and begin is first byte of next field, but is internal to the library, so should be fine)
 field next_field(std::string::iterator begin) noexcept;
