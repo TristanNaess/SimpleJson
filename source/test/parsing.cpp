@@ -40,4 +40,7 @@ TEST(Public, RemoveWhitespace)
 
     data = "This String \"Cont\vains \tQuot\ne Su\frrou\rnded\" Whitespace";
     EXPECT_EQ(remove_whitespace(data), std::string("ThisString\"Cont\vains \tQuot\ne Su\frrou\rnded\"Whitespace")) << "Failed to ignore whitespace in quotes";
+
+    data = "\"This string starts with a quote\" And Must Account For That";
+    EXPECT_EQ(remove_whitespace(data), std::string("\"This string starts with a quote\"AndMustAccountForThat")) << "Failed to ignore whitespace after quote as first character";
 }

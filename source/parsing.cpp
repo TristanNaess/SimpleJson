@@ -96,25 +96,37 @@ field next_field(std::string::iterator begin) noexcept
     return f;
 }
 
+// will remove any non-string whitespace.
+// improperly formatted json will be broken, but it is broken already, so that's fine
+// call before verification
 std::string remove_whitespace(const std::string& s) noexcept
 {
     static std::string whitespace = " \t\n\r\v\f";
+    
+    if (s.size() == 0) return "";
+
     std::string result;
     result.reserve(s.size());
 
-    for (auto c = s.begin(); c != s.end(); c++)
+    result += s[0];
+    bool in_quotes = s[0] == '"';
+
+    for (auto c = s.begin()+1; c != s.end(); c++)
     {
-        if (whitespace.find(*c) != std::string::npos) { continue; }
 
-        if (*c == '"')
+        if (in_quotes)
         {
-            auto t = skip_quotes(c);
-            for (; c < t; c++)
+            if (*c == '"' && *c-1 != '\\')
             {
-                result += *c;
+                in_quotes = false;
             }
-
+            result += *c;
+            continue;
         }
+
+        if (*c == '"') in_quotes = true;
+
+        if (whitespace.find(*c) != std::string::npos) continue;
         result += *c;
     }
 
