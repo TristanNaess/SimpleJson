@@ -1,3 +1,4 @@
+.gitignore
 main
 test_main
 source/.obj/*.o
@@ -9,3 +10,6 @@ source/test/*.deactivate
 include/*.deactivate
 TODO.txt
 documentation/UML_Diagram.xmi
+notes/*
+check.cpp
+check
