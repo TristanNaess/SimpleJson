@@ -18,6 +18,15 @@ TEST(Verification, VerifyObject)
     line = R"({"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{"Key":{}}}}}}}})";
     start = line.begin();
     EXPECT_TRUE(verify_object(start, line.end())) << "Failed to recognize deeply nested objects";
+    line = R"({"Key 1":"Value 1","Key 2":123.45e6},)";
+    start = line.begin();
+    EXPECT_TRUE(verify_object(start, line.end())) << "Failed to recognize object followed by comma";
+    line = R"({"Key 1":"Value 1","Key 2":123.45e6}})";
+    start = line.begin();
+    EXPECT_TRUE(verify_object(start, line.end())) << "Failed to recognize object followed by brace";
+    line = R"({"Key 1":"Value 1","Key 2":123.45e6}])";
+    start = line.begin();
+    EXPECT_TRUE(verify_object(start, line.end())) << "Failed to recognize object followed by bracket";
 
     line = R"("Key 1":"Val 1","Key 2":12345,"Key 3":true})";
     start = line.begin();
@@ -50,15 +59,21 @@ TEST(Verification, VerifyArray)
     line = "[\"String\",[\"fds\",\"dsafasg\"],true,null,6.022e23]";
     start = line.begin();
     EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize an array of elements including another array";
-    //line = "[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]";
-    //start = line.begin();
-    //EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize an array containing an object"; uncomment when verify object is written
+    line = "[1,2,3,{\"Key 1\":\"Value 1\",\"Key 2\":12.345},5,6,7,8]";
+    start = line.begin();
+    EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize an array containing an object";
     line = "[[[[[[]]]]]]";
     start = line.begin();
     EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize deeply nested arrays";
     line = "[1,2,3,4,5],";
     start = line.begin();
     EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize array followed by comma";
+    line = "[1,2,3,4,5]}";
+    start = line.begin();
+    EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize array followed by brace";
+    line = "[1,2,3,4,5]]";
+    start = line.begin();
+    EXPECT_TRUE(verify_array(start, line.end())) << "Failed to recognize array followed by bracket";
 
     line = "1,2,3,4,5]";
     start = line.begin();

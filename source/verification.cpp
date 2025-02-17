@@ -19,7 +19,94 @@ bool verify_json(std::string_view line)
 
 bool verify_object(std::string_view::iterator& start, std::string_view::iterator end)
 {
-    throw todo("TODO: bool verify_object(std::string_view::iterator&, std::string_view::iterator)");
+    enum class State { Start, End, Key, EndOfKey, Val, EndOfVal } state = State::Start;
+
+    auto itr = start;
+    for (; itr != end; itr++)
+    {
+        auto& c = *itr;
+        switch (state)
+        {
+            case State::Start:
+                if (c != '{') return false;
+                state = State::Key;
+                break;
+            case State::End:
+                start = itr;
+                return true;
+                break;
+            case State::Key:
+                if (c == '}')
+                {
+                    state = State::End;
+                    break;
+                }
+                if (verify_string(itr, end) == false) return false;
+                itr--;
+                state = State::EndOfKey;
+                break;
+            case State::EndOfKey:
+                if (c != ':') return false;
+                state = State::Val;
+                break;
+            case State::Val:
+                switch (c)
+                {
+                    case '{':
+                        if (verify_object(itr, end) == false) return false;
+                        break;
+                    case '[':
+                        if (verify_array(itr, end) == false) return false;
+                        break;
+                    case '"':
+                        if (verify_string(itr, end) == false) return false;
+                        break;
+                    case '-':
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        if (verify_number(itr, end) == false) return false;
+                        break;
+                    case 't':
+                    case 'f':
+                        if (verify_bool(itr, end) == false) return false;
+                        break;
+                    case 'n':
+                        if (verify_null(itr, end) == false) return false;
+                        break;
+                    default:
+                        return false;
+                }
+                itr--; // decrement so the itr++ pushes back to the following character
+                state = State::EndOfVal;
+                break;
+            case State::EndOfVal:
+                switch (c)
+                {
+                    case ',':
+                        state = State::Key;
+                        break;
+                    case '}':
+                        state = State::End;
+                        break;
+                }
+                break;
+
+        }
+    }
+    if (state == State::End)
+    {
+        start = itr;
+        return true;
+    }
+    return false;
 }
 
 bool verify_array(std::string_view::iterator& start, std::string_view::iterator end)
@@ -126,7 +213,6 @@ bool verify_string(std::string_view::iterator& start, std::string_view::iterator
                 break;
             case State::Codepoint:
                 if (c < 0x0020) return false;
-                if (c > 0x10FFFF) return false;
                 if (c == '\\') state = State::Esc;
                 if (c == '"') state = State::CloseQuote;
                 break; // all other codepoints legal and stay in state
