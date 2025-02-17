@@ -8,10 +8,6 @@
 //  Anything else like extracting repeat code and adding iterators can come later.
 // --------------------------------------------------------------------------------
 
-
-// extract field starting with begin (this assumes good input and begin is first byte of next field, but is internal to the library, so should be fine)
-field next_field(std::string::iterator begin) noexcept;
-
 // remove non-string whitespace
 std::string remove_whitespace(const std::string& s) noexcept;
 

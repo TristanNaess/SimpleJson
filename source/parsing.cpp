@@ -67,35 +67,6 @@ std::string::iterator skip_brackets(std::string::iterator opening_bracket) noexc
     }
 }
 
-field next_field(std::string::iterator begin) noexcept
-{
-    field f;
-    f.key.begin = begin;
-    f.key.end = skip_quotes(f.key.begin) + 1; // colon after key
-
-    f.val.begin = f.key.end+1; // first byte after ':'
-    f.val.end = f.val.begin;
-    while (*f.val.end != ',' && *f.val.end != '}' && *f.val.end != ']')
-    {
-        switch (*f.val.end)
-        {
-            case '"':
-                f.val.end = skip_quotes(f.val.end);
-                break;
-            case '{':
-            case '[':
-                f.val.end = skip_brackets(f.val.end);
-                break;
-            default:
-                // no action
-                break;
-        }
-        f.val.end++;
-    }
-
-    return f;
-}
-
 // will remove any non-string whitespace.
 // improperly formatted json will be broken, but it is broken already, so that's fine
 // call before verification
