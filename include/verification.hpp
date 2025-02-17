@@ -2,6 +2,7 @@
 #define __VERIFICATION_HPP__
 
 #include <string_view>
+#include <utility>
 #include "error.hpp"
 
 // expects whitespace to be removed
@@ -13,16 +14,15 @@
 // verifies a passed string is valid JSON
 bool verify_json(std::string_view line);
 
-bool verify_object(std::string_view line);
-bool verify_array(std::string_view line);
-bool verify_number(std::string_view line);
-bool verify_string(std::string_view line);
-bool verify_bool(std::string_view line);
-bool verify_null(std::string_view line);
-
-/*
-bool verify_object(std::string::iterator start, char stop_char);
-*/
+// only internal to verification, but I want to test directly (cant' figure out how to define TESTING here, might have to compile test version of each file)
+//#ifdef TESTING
+bool verify_object(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_array(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_number(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_string(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_bool(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_null(std::string_view::iterator& start, std::string_view::iterator end);
+//#endif // TESTING
 
 // for checking the type of verified JSON
 bool is_object(std::string_view line);
