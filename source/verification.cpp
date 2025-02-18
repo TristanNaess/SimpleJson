@@ -1,5 +1,13 @@
 #include "verification.hpp"
 
+// Need to pre-define them here for use before definition
+bool verify_object(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_array(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_number(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_string(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_bool(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_null(std::string_view::iterator& start, std::string_view::iterator end);
+
 bool verify_json(std::string_view line)
 {
     if (line.size() == 0) return false; // cannot be empty

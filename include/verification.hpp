@@ -14,16 +14,6 @@
 // verifies a passed string is valid JSON
 bool verify_json(std::string_view line);
 
-// only internal to verification, but I want to test directly (cant' figure out how to define TESTING here, might have to compile test version of each file)
-//#ifdef TESTING
-bool verify_object(std::string_view::iterator& start, std::string_view::iterator end);
-bool verify_array(std::string_view::iterator& start, std::string_view::iterator end);
-bool verify_number(std::string_view::iterator& start, std::string_view::iterator end);
-bool verify_string(std::string_view::iterator& start, std::string_view::iterator end);
-bool verify_bool(std::string_view::iterator& start, std::string_view::iterator end);
-bool verify_null(std::string_view::iterator& start, std::string_view::iterator end);
-//#endif // TESTING
-
 // for checking the type of verified JSON
 bool is_object(std::string_view line);
 bool is_array(std::string_view line);
@@ -31,4 +21,5 @@ bool is_number(std::string_view line);
 bool is_string(std::string_view line);
 bool is_bool(std::string_view line);
 bool is_null(std::string_view line);
+
 #endif//__VERIFICATION_HPP__

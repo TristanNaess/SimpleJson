@@ -29,7 +29,7 @@ DEFS = $(patsubst %, -D%, $(DEFINITIONS))
 IPATHS = $(patsubst %, -I%, $(IDIRS))
 CFLAGS = $(FLAGS) $(IPATHS) $(LIBS) $(DEFS)
 
-TEST_FLAGS = $(filter-out -lpthread, $(filter-out -g, $(CFLAGS))) -lgtest -lgtest_main -lpthread -DTESTING
+TEST_FLAGS = $(filter-out -lpthread, $(filter-out -g, $(CFLAGS))) -lgtest -lgtest_main -lpthread
 
 # get source and object file names
 SOURCE = $(notdir $(wildcard $(SDIR)/*.cpp))
@@ -50,6 +50,7 @@ $(TODIR)/%.o : $(TDIR)/%.cpp $(TDDIR)/%.d | $(TDDIR)
 $(TARGET) : $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
+test : CFLAGS += -DTESTING
 test : $(filter-out $(patsubst %.cpp, $(ODIR)/%.o, $(MAIN_FILE_NAME)), $(OBJ)) $(TOBJ)
 	$(CC) -o $(TEST_TARGET) $^ $(TEST_FLAGS)
 

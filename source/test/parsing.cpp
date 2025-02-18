@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 #include "parsing.hpp"
- 
+
+// not included in header
+std::string::iterator skip_quotes(std::string::iterator opening_quote) noexcept;
+std::string::iterator skip_brackets(std::string::iterator opening_bracket) noexcept;
+
 // internal utilities
 TEST(Internals, SkipQuotes)
 {

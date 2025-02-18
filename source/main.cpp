@@ -10,6 +10,8 @@
 
 int main(int argc, char** argv)
 {
+    std::cout << "Dummy body" << std::endl;
+    /*
     std::ifstream file{ "resource/data.json" };
 
     std::string buffer;
@@ -25,4 +27,5 @@ int main(int argc, char** argv)
     {
         std::cout << k << '\n';
     }
+    */
 }

@@ -1,6 +1,14 @@
 #include <gtest/gtest.h>
 #include "verification.hpp"
 
+// need to declare here, not included in header
+bool verify_object(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_array(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_number(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_string(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_bool(std::string_view::iterator& start, std::string_view::iterator end);
+bool verify_null(std::string_view::iterator& start, std::string_view::iterator end);
+
 TEST(Verification, VerifyObject)
 {
     std::string_view line = "{}";
