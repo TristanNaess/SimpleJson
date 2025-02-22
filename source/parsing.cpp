@@ -1,7 +1,13 @@
 #include "parsing.hpp"
 
+// ------------------------------------
+//  Data Extraction
+// ------------------------------------
+
+
 // starting at opening character, skip to matching closing character, returns iter to closing character
 // only works if data is verified
+// non-const
 std::string::iterator skip_quotes(std::string::iterator opening_quote) noexcept
 {
     auto itr = opening_quote;
@@ -22,21 +28,21 @@ std::string::iterator skip_quotes(std::string::iterator opening_quote) noexcept
         }
     }
 }
-// because I need a const version for remove_whitespace
-std::string::const_iterator skip_quotes(std::string::const_iterator opening_quote) noexcept
+
+// const
+std::string_view::iterator skip_quotes(std::string_view::iterator opening_quote) noexcept
 {
-    auto itr = opening_quote;
     while (1)
     {
-        itr++;
-        switch (*itr)
+        opening_quote++;
+        switch (*opening_quote)
         {
             case '\\':
-                itr++;
+                opening_quote++;
                 continue;
                 break;
             case '"':
-                return itr;
+                return opening_quote;
             default:
                 // no action
                 break;
@@ -45,6 +51,7 @@ std::string::const_iterator skip_quotes(std::string::const_iterator opening_quot
 }
 
 // only works if data is verified
+// non-const
 std::string::iterator skip_brackets(std::string::iterator opening_bracket) noexcept
 {
     auto itr = opening_bracket;
@@ -66,6 +73,116 @@ std::string::iterator skip_brackets(std::string::iterator opening_bracket) noexc
         return itr;
     }
 }
+
+// const
+std::string_view::iterator skip_brackets(std::string_view::iterator opening_bracket) noexcept
+{
+    while (1)
+    {
+        char open = *opening_bracket;
+        char close = open == '{' ? '}' : ']';
+
+        std::size_t depth = 1;
+        while (depth > 0)
+        {
+            opening_bracket++;
+            // can't use switch, because case has to be a literal
+            if (*opening_bracket == open) { depth++; continue; }
+            if (*opening_bracket == close) { depth--; continue; }
+            if (*opening_bracket == '"') { opening_bracket = skip_quotes(opening_bracket); continue; }
+        }
+
+        return opening_bracket;
+    }
+}
+
+
+
+std::string_view::iterator seek(std::string_view line, char c, std::string_view::iterator start) noexcept
+{
+    for (; start != line.end(); start++)
+    {
+        switch (*start)
+        {
+            case '"':
+                start = skip_quotes(start);
+                break;
+            case '{':
+            case '[':
+                start = skip_brackets(start);
+                break;
+            default:
+                if (*start == c) return start;
+        }
+    }
+    return line.end();
+}
+
+std::string::iterator seek(std::string& line, char c, std::string::iterator start) noexcept
+{
+    for (; start != line.end(); start++)
+    {
+        switch (*start)
+        {
+            case '"':
+                start = skip_quotes(start);
+                break;
+            case '{':
+            case '[':
+                start = skip_brackets(start);
+                break;
+            default:
+                if (*start == c) return start;
+        }
+    }
+    return line.end();
+}
+
+std::string_view next_field(std::string_view line, std::string_view::iterator start) noexcept
+{
+    if (line.size() == 2) return std::string_view(line.end(), line.end());
+    start++;
+    if (start == line.end()) return std::string_view(start, start);
+    std::string_view::iterator end = seek(line, ',', start);
+    if (end == line.end()) end--;
+    return std::string_view(start, end);
+}
+
+std::string_view get_key(std::string_view field)
+{
+    std::string_view::iterator delim = seek(field, ':', field.begin());
+    return std::string_view(field.begin(), delim);
+}
+
+mut_view get_key(mut_view field)
+{
+    std::string::iterator delim = seek(field.data, ':', field.begin);
+    return mut_view(field.data, field.begin, delim);
+}
+
+std::string_view get_val(std::string_view field)
+{
+    std::string_view::iterator delim = seek(field, ':', field.begin());
+    return std::string_view(delim, field.end());
+}
+
+mut_view get_val(mut_view field)
+{
+    std::string::iterator delim = seek(field.data, ':', field.begin);
+    return mut_view(field.data, delim, field.begin);
+}
+
+void delete_field(mut_view field)
+{
+    field.data.erase(field.begin, field.end);
+}
+
+void change_field(mut_view field)
+{
+    mut_view val = get_val(field);
+    field.data.replace(val.begin, val.end, field.data.begin(), field.data.end());
+}
+
 
 // will remove any non-string whitespace.
 // improperly formatted json will be broken, but it is broken already, so that's fine

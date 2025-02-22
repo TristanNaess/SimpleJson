@@ -4,6 +4,8 @@
 // not included in header
 std::string::iterator skip_quotes(std::string::iterator opening_quote) noexcept;
 std::string::iterator skip_brackets(std::string::iterator opening_bracket) noexcept;
+std::string_view::iterator seek(std::string_view line, char c, std::string_view::iterator start) noexcept;
+// std::string::iterator seek(std::string& line, char c, std::string::iterator start) noexcept; implementations are identical apart from string type. only testing one
 
 // internal utilities
 TEST(Internals, SkipQuotes)
@@ -13,6 +15,8 @@ TEST(Internals, SkipQuotes)
 
     data = "\"fdfds\\\"dfbdfshfg\"gfdshs";
     EXPECT_EQ(skip_quotes(data.begin()), data.begin() + 17) << "Failed to locate quote at data[17] skipping internal quote";
+
+    data = "\"jkfl;dsafbiuodsfjsakl;fdsba";
 }
 
 TEST(Internals, SkipBrackets)
@@ -48,3 +52,24 @@ TEST(Public, RemoveWhitespace)
     data = "\"This string starts with a quote\" And Must Account For That";
     EXPECT_EQ(remove_whitespace(data), std::string("\"This string starts with a quote\"AndMustAccountForThat")) << "Failed to ignore whitespace after quote as first character";
 }
+
+TEST(Public, Seek)
+{
+    std::string_view line = "fabei;\"gsafkl;vdsak\"fdsl;fbio";
+    EXPECT_EQ(seek(line, 'l', line.begin()), line.begin() + 23) << "Failed to find 'l' after quotes, skipping one in quotes";
+    EXPECT_EQ(seek(line, 'f', line.begin() + 3), line.begin() + 20) << "Failed to find 'f' after quotes, skipping one before start";
+
+    line = "fds;ds{dafs{gfds[afdjksal;]fd{sha}jkl;fdsab}fsjakl;f}fdgsa";
+    EXPECT_EQ(seek(line, 'g', line.begin()), line.begin() + 55) << "Failed to find 'g' after skipping nested brackets";
+    EXPECT_EQ(seek(line, ';', line.begin() + 8), line.begin() + 50) << "Failed to find ';' after skipping brackets, starting after first ';'";
+    
+    line = "ask{fj;l{ab\"ga{sgo\"i;a}jkfd}lfdsa";
+    EXPECT_EQ(seek(line, 'd', line.begin()), line.begin() + 30) << "Failed to find 'd' after skipping brackets, including quoted bracket";
+}
+
+
+TEST(Public, NextField)
+{
+    std::string data = R"({"name":["John","","Smith],"id":7928113,"department":"mensware","availability":{"sunday":[8,1730],"monday":[null,null],"tuesday":[null,null],"wednesday":[8,1730],"thursday":[8,1730],"friday":[8,1200],"saturday":[1200,1730]}})";
+}
+
