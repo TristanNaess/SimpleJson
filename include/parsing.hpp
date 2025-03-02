@@ -14,6 +14,8 @@ struct mut_view
     mut_view(std::string& line, std::string::iterator begin, std::string::iterator end)
         : data(line), begin(begin), end(end) {  }
 
+    mut_view(mut_view& other) : data(other.data), begin(other.begin), end(other.end) {  }
+
     std::size_t size();
 
     std::string& data;

@@ -1,5 +1,4 @@
 #include "json.hpp"
-#include "parsing.hpp"
 
 namespace json
 {
@@ -24,7 +23,7 @@ namespace json
         m_type = type;
     }
 
-    json::json(const std::string& data)
+    json::json(std::string_view data)
     {
         m_data = remove_whitespace(data);
         //if (!verify_json(data)) throw parsing_error("Error verifying json data"); TODO: not yet added
@@ -33,21 +32,14 @@ namespace json
         else m_type = Type::Array;
     }
 
-    json::json(const char* data) : json(std::string(data)) {  }
-
     std::vector<std::string> json::keys() // json::wrong_type
     {
         throw todo{"TODO: json::keys()"};
     }
 
-    bool json::contains(const std::string& key) // json::wrong_type
+    bool json::contains(std::string_view key) // json::wrong_type
     {
-        throw todo{"TODO: json::contains(const std::string&)"};
-    }
-
-    bool json::contains(const char* key) // json::wrong_type
-    {
-        throw todo{"TODO: json::contains(const char*)"};
+        throw todo{"TODO: json::contains(std::string_view)"};
     }
 
     std::size_t json::size() // json::wrong_type
@@ -60,14 +52,9 @@ namespace json
         return m_type;
     }
 
-    accessor json::operator[](const std::string& key) // json::wrong_type, json::out_of_range
+    accessor json::operator[](std::string_view key) // json::wrong_type, json::out_of_range
     {
-        throw todo{"TODO: json::operator[](const std::string&)"};
-    }
-
-    accessor json::operator[](const char* key) // json::wrong_type, json::out_of_range
-    {
-        throw todo{"TODO: json::operator[](const char*)"};
+        throw todo{"TODO: json::operator[](std::string_view)"};
     }
 
     accessor json::operator[](std::size_t index) // json::wrong_type, json::out_of_range
@@ -84,9 +71,9 @@ namespace json
     //  json::accessor
     // -----------------------------------
 
-    accessor::accessor(std::string& data, std::string::iterator front, std::string::iterator back) : m_data(data)
+    accessor::accessor(mut_view data) : m_data(data)
     {
-        throw todo{"TODO: accessor(std::string&, std::string::iterator, std::string::iterator)"};
+        throw todo{"TODO: accessor(mut_view data)"};
     }
 
     std::vector<std::string> accessor::keys()       // json::wrong_type
@@ -94,14 +81,9 @@ namespace json
         throw todo{"TODO: accessor::keys()"};
     }
 
-    bool accessor::contains(const std::string& key) // json::wrong_type
+    bool accessor::contains(std::string_view key) // json::wrong_type
     {
-        throw todo{"TODO: accessor::contains(const std::string&)"};
-    }
-
-    bool accessor::contains(const char* key)        // json::wrong_type
-    {
-        throw todo{"TODO: accessor::contains(const char*)"};
+        throw todo{"TODO: accessor::contains(std::string_view)"};
     }
 
     // array data
@@ -118,14 +100,9 @@ namespace json
 
 
     // write operators; throw json::wrong_type
-    accessor& accessor::operator=(const std::string& str)
+    accessor& accessor::operator=(std::string_view str)
     {
-        throw todo{"TODO: accessor::operator=(const std::string&)"};
-    }
-
-    accessor& accessor::operator=(const char* str)
-    {
-        throw todo{"TODO: accessor::operator=(const char*)"};
+        throw todo{"TODO: accessor::operator=(std::string_view)"};
     }
 
     accessor& accessor::operator=(long double num)
@@ -257,30 +234,20 @@ namespace json
 
 
     // subscript operators; throw json::out_of_range, json::wrong_type
-    accessor accessor::operator[](const std::string& key)
+    accessor accessor::operator[](std::string_view key)
     {
-        throw todo{"TODO: accessor::operator[](const std::string&)"};
+        throw todo{"TODO: accessor::operator[](std::string_view)"};
     }
 
-    accessor accessor::operator[](const char* key)
-    {
-        throw todo{"TODO: accessor::operator[](const char*)"};
-    }
-    
     accessor accessor::operator[](std::size_t index)
     {
         throw todo{"TODO: accessor::operator[](std::size_t)"};
     }
 
     // throw json::wrong_type
-    bool operator==(const accessor& a, const std::string& str)
+    bool operator==(const accessor& a, std::string_view str)
     {
-        throw todo{"TODO: operator==(const accessor& a, const std::string& str)"};
-    }
-
-    bool operator==(const accessor& a, const char* str)
-    {
-        throw todo{"TODO: operator==(const accessor& a, const char* str)"};
+        throw todo{"TODO: operator==(const accessor& a, std::string_view str)"};
     }
 
     bool operator==(const accessor& a, const long double num)
