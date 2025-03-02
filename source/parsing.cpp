@@ -187,7 +187,7 @@ void change_field(mut_view field)
 // will remove any non-string whitespace.
 // improperly formatted json will be broken, but it is broken already, so that's fine
 // call before verification
-std::string remove_whitespace(const std::string& s) noexcept
+std::string remove_whitespace(std::string_view s) noexcept
 {
     static std::string whitespace = " \t\n\r\v\f";
     

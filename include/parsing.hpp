@@ -23,7 +23,7 @@ struct mut_view
 };
 
 // remove non-string whitespace
-std::string remove_whitespace(const std::string& s) noexcept;
+std::string remove_whitespace(std::string_view s) noexcept;
 
 // find next k-v pair, assumes start is character before field in verified data string
 std::string_view next_field(std::string_view line, std::string_view::iterator start) noexcept;

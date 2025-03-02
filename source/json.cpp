@@ -57,6 +57,11 @@ namespace json
         throw todo{"TODO: json::operator[](std::string_view)"};
     }
 
+    accessor json::operator[](const char* key) // json::wrong_type, json::out_of_range
+    {
+        return (*this)[std::string_view(key)];
+    }
+
     accessor json::operator[](std::size_t index) // json::wrong_type, json::out_of_range
     {
         throw todo{"TODO: json::operator[](std::size_t)"};
@@ -237,6 +242,11 @@ namespace json
     accessor accessor::operator[](std::string_view key)
     {
         throw todo{"TODO: accessor::operator[](std::string_view)"};
+    }
+
+    accessor accessor::operator[](const char* key)
+    {
+        return (*this)[std::string_view(key)];
     }
 
     accessor accessor::operator[](std::size_t index)

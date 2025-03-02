@@ -2,6 +2,7 @@
 #define __JSON_HPP__
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include "error.hpp"
 #include "parsing.hpp"
@@ -95,7 +96,7 @@ namespace json
 
         private:
             //json& m_parent_json;
-            mut_view data;
+            mut_view m_data;
             //Type m_type; don't need the type here, since the accessor isn't called more than once
     };
 
@@ -135,6 +136,7 @@ namespace json
 
             // access
             accessor operator[](std::string_view key);    // json::wrong_type, json::out_of_range
+            accessor operator[](const char* key);    // json::wrong_type, json::out_of_range
             accessor operator[](std::size_t index);         // json::wrong_type, json::out_of_range
 
             // once iterators are added
