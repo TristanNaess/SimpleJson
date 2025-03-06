@@ -11,31 +11,35 @@
 
 struct mut_view
 {
-    mut_view(std::string& line, std::string::iterator begin, std::string::iterator end)
-        : data(line), begin(begin), end(end) {  }
+    mut_view(std::string& line, std::string::iterator begin, std::string::iterator end);
 
-    mut_view(mut_view& other) : data(other.data), begin(other.begin), end(other.end) {  }
+    mut_view& operator=(const mut_view& other);
 
-    std::size_t size();
+    std::size_t size() const;
+
+    operator std::string() const;
 
     std::string& data;
     std::string::iterator begin, end;
 };
 
+bool operator==(const mut_view& lhs, const mut_view& rhs);
+
 // remove non-string whitespace
 std::string remove_whitespace(std::string_view s) noexcept;
 
 // find next k-v pair, assumes start is character before field in verified data string
-std::string_view next_field(std::string_view line, std::string_view::iterator start) noexcept;
+mut_view next_field(mut_view line, std::string::iterator start) noexcept;
 
-std::string_view get_key(std::string_view field);
 mut_view         get_key(mut_view field);
 
-std::string_view get_val(std::string_view field);
 mut_view         get_val(mut_view field);
 
 void delete_field(mut_view field);
 void change_field(mut_view field);
+
+// need conversion to datatype functions
+
 
 
 #endif//__PARSING_HPP__:w

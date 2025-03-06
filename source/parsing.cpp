@@ -1,6 +1,34 @@
 #include "parsing.hpp"
 
 // ------------------------------------
+//  mut_view
+// ------------------------------------
+mut_view::mut_view(std::string& line, std::string::iterator begin, std::string::iterator end) : data(line), begin(begin), end(end) {  }
+
+mut_view& mut_view::operator=(const mut_view& other)
+{
+    data = other.data;
+    begin = other.begin;
+    end = other.end;
+    return *this;
+}
+
+std::size_t mut_view::size() const
+{
+    return end - begin;
+}
+
+mut_view::operator std::string() const
+{
+    return std::string(begin, end);
+}
+
+bool operator==(const mut_view& lhs, const mut_view& rhs)
+{
+    return lhs.data == rhs.data && lhs.begin == rhs.begin && lhs.end == rhs.end;
+}
+
+// ------------------------------------
 //  Data Extraction
 // ------------------------------------
 
@@ -96,11 +124,10 @@ std::string_view::iterator skip_brackets(std::string_view::iterator opening_brac
     }
 }
 
-
-
-std::string_view::iterator seek(std::string_view line, char c, std::string_view::iterator start) noexcept
+std::string::iterator seek(mut_view data, char c, std::string::iterator start) noexcept
 {
-    for (; start != line.end(); start++)
+    // could add an assert here for start within data
+    while (start != data.end)
     {
         switch (*start)
         {
@@ -114,61 +141,28 @@ std::string_view::iterator seek(std::string_view line, char c, std::string_view:
             default:
                 if (*start == c) return start;
         }
+        start++;
     }
-    return line.end();
+    return data.end;
 }
 
-std::string::iterator seek(std::string& line, char c, std::string::iterator start) noexcept
+mut_view next_field(mut_view data, std::string::iterator start) noexcept
 {
-    for (; start != line.end(); start++)
-    {
-        switch (*start)
-        {
-            case '"':
-                start = skip_quotes(start);
-                break;
-            case '{':
-            case '[':
-                start = skip_brackets(start);
-                break;
-            default:
-                if (*start == c) return start;
-        }
-    }
-    return line.end();
-}
-
-std::string_view next_field(std::string_view line, std::string_view::iterator start) noexcept
-{
-    if (line.size() == 2) return std::string_view(line.end(), line.end());
+    if (start == data.end) return mut_view(data.data, data.end, data.end);
     start++;
-    if (start == line.end()) return std::string_view(start, start);
-    std::string_view::iterator end = seek(line, ',', start);
-    if (end == line.end()) end--;
-    return std::string_view(start, end);
-}
-
-std::string_view get_key(std::string_view field)
-{
-    std::string_view::iterator delim = seek(field, ':', field.begin());
-    return std::string_view(field.begin(), delim);
+    std::string::iterator end = seek(data, ',', start);
+    return mut_view(data.data, start, end);
 }
 
 mut_view get_key(mut_view field)
 {
-    std::string::iterator delim = seek(field.data, ':', field.begin);
+    std::string::iterator delim = seek(field, ':', field.begin);
     return mut_view(field.data, field.begin, delim);
-}
-
-std::string_view get_val(std::string_view field)
-{
-    std::string_view::iterator delim = seek(field, ':', field.begin());
-    return std::string_view(delim, field.end());
 }
 
 mut_view get_val(mut_view field)
 {
-    std::string::iterator delim = seek(field.data, ':', field.begin);
+    std::string::iterator delim = seek(field, ':', field.begin);
     return mut_view(field.data, delim, field.begin);
 }
 

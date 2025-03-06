@@ -4,8 +4,7 @@
 // not included in header
 std::string::iterator skip_quotes(std::string::iterator opening_quote) noexcept;
 std::string::iterator skip_brackets(std::string::iterator opening_bracket) noexcept;
-std::string_view::iterator seek(std::string_view line, char c, std::string_view::iterator start) noexcept;
-// std::string::iterator seek(std::string& line, char c, std::string::iterator start) noexcept; implementations are identical apart from string type. only testing one
+std::string::iterator seek(mut_view data, char c, std::string::iterator start) noexcept;
 
 // internal utilities
 TEST(Internals, SkipQuotes)
@@ -55,16 +54,19 @@ TEST(Public, RemoveWhitespace)
 
 TEST(Public, Seek)
 {
-    std::string_view line = "fabei;\"gsafkl;vdsak\"fdsl;fbio";
-    EXPECT_EQ(seek(line, 'l', line.begin()), line.begin() + 23) << "Failed to find 'l' after quotes, skipping one in quotes";
-    EXPECT_EQ(seek(line, 'f', line.begin() + 3), line.begin() + 20) << "Failed to find 'f' after quotes, skipping one before start";
+    std::string line = "fabei;\"gsafkl;vdsak\"fdsl;fbio";
+    mut_view data(line, line.begin(), line.end());
+    EXPECT_EQ(seek(data, 'l', data.begin), line.begin() + 23) << "Failed to find 'l' after quotes, skipping one in quotes";
+    EXPECT_EQ(seek(data, 'f', data.begin + 3), line.begin() + 20) << "Failed to find 'f' after quotes, skipping one before start";
 
     line = "fds;ds{dafs{gfds[afdjksal;]fd{sha}jkl;fdsab}fsjakl;f}fdgsa";
-    EXPECT_EQ(seek(line, 'g', line.begin()), line.begin() + 55) << "Failed to find 'g' after skipping nested brackets";
-    EXPECT_EQ(seek(line, ';', line.begin() + 8), line.begin() + 50) << "Failed to find ';' after skipping brackets, starting after first ';'";
+    data = mut_view(line, line.begin(), line.end());
+    EXPECT_EQ(seek(data, 'g', data.begin), line.begin() + 55) << "Failed to find 'g' after skipping nested brackets";
+    EXPECT_EQ(seek(data, ';', data.begin + 8), line.begin() + 50) << "Failed to find ';' after skipping brackets, starting after first ';'";
     
     line = "ask{fj;l{ab\"ga{sgo\"i;a}jkfd}lfdsa";
-    EXPECT_EQ(seek(line, 'd', line.begin()), line.begin() + 30) << "Failed to find 'd' after skipping brackets, including quoted bracket";
+    data = mut_view(line, line.begin(), line.end());
+    EXPECT_EQ(seek(data, 'd', data.begin), line.begin() + 30) << "Failed to find 'd' after skipping brackets, including quoted bracket";
 }
 
 

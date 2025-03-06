@@ -36,7 +36,7 @@ namespace json
             bool contains(const char* key);         // json::wrong_type
 
             // array data
-            std::size_t size(); // json::wrong_type; allow for object too, return number of fields
+            std::size_t size(); // allow for object too, return number of fields
 
             // general
             Type type() noexcept;

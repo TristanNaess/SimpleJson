@@ -34,7 +34,17 @@ namespace json
 
     std::vector<std::string> json::keys() // json::wrong_type
     {
-        throw todo{"TODO: json::keys()"};
+        //throw todo{"TODO: json::keys()"};
+        if (m_type != Type::Object) throw wrong_type("Cannot get keys from array type json");
+        std::vector<std::string> keys;
+        mut_view data(m_data, m_data.begin(), m_data.end());
+        mut_view field(m_data, m_data.begin(), m_data.begin());
+        while ((field = next_field(data, field.end)) != mut_view(m_data, m_data.end(), m_data.end()))
+        {
+            keys.push_back(to_string(get_key(field)));
+        }
+
+        return keys;
     }
 
     bool json::contains(std::string_view key) // json::wrong_type
@@ -42,7 +52,7 @@ namespace json
         throw todo{"TODO: json::contains(std::string_view)"};
     }
 
-    std::size_t json::size() // json::wrong_type
+    std::size_t json::size()
     {
         throw todo{"TODO: json::size()"};
     }
