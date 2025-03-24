@@ -6,6 +6,7 @@
 #include <vector>
 #include "error.hpp"
 #include "parsing.hpp"
+#include "conversion.hpp"
 
 namespace json
 {

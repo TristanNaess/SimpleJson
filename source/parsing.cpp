@@ -23,6 +23,11 @@ mut_view::operator std::string() const
     return std::string(begin, end);
 }
 
+mut_view::operator std::string_view() const
+{
+    return std::string_view(begin, end);
+}
+
 bool operator==(const mut_view& lhs, const mut_view& rhs)
 {
     return lhs.data == rhs.data && lhs.begin == rhs.begin && lhs.end == rhs.end;

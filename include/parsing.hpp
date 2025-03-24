@@ -18,6 +18,7 @@ struct mut_view
     std::size_t size() const;
 
     operator std::string() const;
+    operator std::string_view() const;
 
     std::string& data;
     std::string::iterator begin, end;
