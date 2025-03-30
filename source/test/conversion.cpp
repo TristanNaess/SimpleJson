@@ -17,6 +17,10 @@ TEST(Conversion, String)
     EXPECT_EQ(conversion::to_data("This line contains unicode characters: \u00ab \u01da \uad2f"), std::string("This line contains unicode characters: \u00ab \u01da \uad2f")) << "Failed to convert string containing unicode characters to internal representation";
 }
 
+// Technically I don't need to do more than check that the functions work with basic data, and on the smaller data types that the values aren't too big, because I will be calling
+// std::sto[iuld] or std::to_string
+// but I already wrote the tests, so I'm leaving them here. Also, if I write my own implementation of the functions I'll need them
+
 TEST(Conversion, LongDouble)
 {
     long double epsilon = std::numeric_limits<long double>::epsilon();
