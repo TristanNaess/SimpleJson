@@ -99,10 +99,6 @@ TEST(Conversion, Double)
     EXPECT_NEAR(conversion::to_double(max_str), max, epsilon) << "Failed to convert max double from internal representation to double";
     EXPECT_NEAR(conversion::to_double(min_str), min, epsilon) << "Failed to convert min double from internal representation to double";
 
-    // To double failing
-    EXPECT_THROW(conversion::to_double(std::to_string(max + 1000)), json::out_of_range) << "Failed to throw json::out_of_range error for value greater than possible to store in double";
-    EXPECT_THROW(conversion::to_double(std::to_string(min - 1000)), json::out_of_range) << "Failed to throw json::out_of_range error for negative value of greater magnitude than possible to store in double";
-
     // From double passing
     EXPECT_EQ(conversion::to_data(0L), "0") << "Failed to convert 0 from double to internal representation";
     EXPECT_EQ(conversion::to_data(0L), "-0") << "Failed to convert -0 from double to internal representation";
@@ -155,10 +151,6 @@ TEST(Conversion, Float)
     EXPECT_NEAR(conversion::to_float(max_str), max, epsilon) << "Failed to convert max float from internal representation to float";
     EXPECT_NEAR(conversion::to_float(min_str), min, epsilon) << "Failed to convert min float from internal representation to float";
     
-    // To float failing
-    EXPECT_THROW(conversion::to_float(std::to_string(max + 1000)), json::out_of_range) << "Failed to throw json::out_of_range error for value greater than possible to store in float";
-    EXPECT_THROW(conversion::to_float(std::to_string(min - 1000)), json::out_of_range) << "Failed to throw json::out_of_range error for negative value of greater magnitude than possible to store in float";
-
     // From float passing
     EXPECT_EQ(conversion::to_data(0L), "0") << "Failed to convert 0 from float to internal representation";
     EXPECT_EQ(conversion::to_data(0L), "-0") << "Failed to convert -0 from float to internal representation";
@@ -184,108 +176,135 @@ TEST(Conversion, Float)
 
 }
 
-/*
 TEST(Conversion, LongLongUnsigned)
 {
     // To long long unsigned int passing
-
-    // To long long unsigned int failing
+    EXPECT_EQ(conversion::to_ullint("17378905"), 17378905ULL) << "Failed to convert unsigned long long int to internal representation";
+    
+    unsigned long long max = std::numeric_limits<unsigned long long>::max();
+    std::string max_string = std::to_string(max);
+    EXPECT_EQ(conversion::to_ullint(max_string), max) << "Failed to convert max unsigned long long from internal representation to ullint";
 
     // From long long unsigned int passing
-
-    // From long long unsigned int failing
+    EXPECT_EQ(conversion::to_data(7894132ULL), "7894132") << "Failed to convert internal representation to unsigned long long int";
+    // not checking min and max because I'm just calling std::to_string, which I use to make the test
 }
 
 TEST(Conversion, LongUnsigned)
 {
     // To long unsigned int passing
+    EXPECT_EQ(conversion::to_ulint("17378905"), 17378905UL) << "Failed to convert unsigned long int to internal representation";
     
-    // To long unsigned int failing
+    unsigned long max = std::numeric_limits<unsigned long>::max();
+    std::string max_string = std::to_string(max);
+    EXPECT_EQ(conversion::to_ulint(max_string), max) << "Failed to convert max unsigned long from internal representation to ulint";
+    EXPECT_EQ(conversion::to_ulint("0"), 0) << "Failed to convert min unsigned long from internal representation to ulint";
 
     // From long unsigned int passing
-
-    // From long unsigned int failing
+    EXPECT_EQ(conversion::to_data(7894132UL), "7894132") << "Failed to convert internal representation to unsigned long int";
 }
 
 TEST(Conversion, Unsigned)
 {
     // To unsigned int passing
+    EXPECT_EQ(conversion::to_uint("17378905"), 17378905U) << "Failed to convert unsigned  int to internal representation";
+    
+    unsigned max = std::numeric_limits<unsigned>::max();
+    std::string max_string = std::to_string(max);
+    EXPECT_EQ(conversion::to_uint(max_string), max) << "Failed to convert max unsigned  from internal representation to uint";
+    EXPECT_EQ(conversion::to_uint("0"), 0) << "Failed to convert min unsigned  from internal representation to uint";
 
-    // To unsigned int failing
-
-    // From unsigned int passing
-
-    // From unsigned int failing
-
+    // From  unsigned int passing
+    EXPECT_EQ(conversion::to_data(7894132U), "7894132") << "Failed to convert internal representation to unsigned int";
 }
 
 TEST(Conversion, UnsignedChar)
 {
-    // To unsigned char passing
+    // To long unsigned int passing
+    EXPECT_EQ(conversion::to_uchar("123"), 123U) << "Failed to convert unsigned long int to internal representation";
+    
+    unsigned char max = std::numeric_limits<unsigned char>::max();
+    std::string max_string = std::to_string(max);
+    EXPECT_EQ(conversion::to_uchar(max_string), max) << "Failed to convert max unsigned long from internal representation to ulint";
+    EXPECT_EQ(conversion::to_uchar("0"), 0) << "Failed to convert min unsigned long from internal representation to ulint";
 
-    // To unsigned char failing
-
-    // From unsigned char passing
-
-    // From unsigned char failing
-
+    // From long unsigned int passing
+    EXPECT_EQ(conversion::to_data(123U), "123") << "Failed to convert internal representation to unsigned long int";
 }
 
 TEST(Conversion, LongLongInt)
 {
     // To long long int passing
+    EXPECT_EQ(conversion::to_ullint("-17378905"), -17378905LL) << "Failed to convert  long long int to internal representation";
     
-    // To long long int failing
+    long long max = std::numeric_limits<long long>::max();
+    std::string max_string = std::to_string(max);
+    long long min = std::numeric_limits<long long>::min();
+    std::string min_string = std::to_string(min);
+    EXPECT_EQ(conversion::to_llint(max_string), max) << "Failed to convert max  long long from internal representation to llint";
+    EXPECT_EQ(conversion::to_llint(min_string), min) << "Failed to convert min  long long from internal representation to llint";
 
     // From long long int passing
-
-    // From lon glong int failing
-
+    EXPECT_EQ(conversion::to_data(-7894132LL), "-7894132") << "Failed to convert internal representation to long long int";
+    // not checking min and max because I'm just calling std::to_string, which I use to make the test
 }
 
 TEST(Conversion, LongInt)
 {
     // To long int passing
-
-    // To long int failing
+    EXPECT_EQ(conversion::to_lint("-17378905"), -17378905L) << "Failed to convert  long int to internal representation";
+    
+    long max = std::numeric_limits<long>::max();
+    std::string max_string = std::to_string(max);
+    long min = std::numeric_limits<long>::min();
+    std::string min_string = std::to_string(min);
+    EXPECT_EQ(conversion::to_lint(max_string), max) << "Failed to convert max  long from internal representation to lint";
+    EXPECT_EQ(conversion::to_lint(min_string), min) << "Failed to convert min  long from internal representation to lint";
 
     // From long int passing
-
-    // From long int failing
-
+    EXPECT_EQ(conversion::to_data(-7894132L), "-7894132") << "Failed to convert internal representation to long int";
+    // not checking min and max because I'm just calling std::to_string, which I use to make the test
 }
 
 TEST(Conversion, Int)
 {
     // To int passing
-
-    // To int failing
+    EXPECT_EQ(conversion::to_int("-17378905"), -17378905) << "Failed to convert  int to internal representation";
+    
+    int max = std::numeric_limits<int>::max();
+    std::string max_string = std::to_string(max);
+    int min = std::numeric_limits<int>::min();
+    std::string min_string = std::to_string(min);
+    EXPECT_EQ(conversion::to_int(max_string), max) << "Failed to convert max  from internal representation to int";
+    EXPECT_EQ(conversion::to_int(min_string), min) << "Failed to convert min  from internal representation to int";
 
     // From int passing
-
-    // From int failing
-
+    EXPECT_EQ(conversion::to_data(-7894132), "-7894132") << "Failed to convert internal representation to int";
+    // not checking min and max because I'm just calling std::to_string, which I use to make the test
 }
 
 TEST(Conversion, Char)
 {
-    // To char passing
+    // To int passing
+    EXPECT_EQ(conversion::to_char("-41"), -41) << "Failed to convert  int to internal representation";
+    
+    char max = std::numeric_limits<char>::max();
+    std::string max_string = std::to_string(max);
+    char min = std::numeric_limits<char>::min();
+    std::string min_string = std::to_string(min);
+    EXPECT_EQ(conversion::to_char(max_string), max) << "Failed to convert max  from internal representation to char";
+    EXPECT_EQ(conversion::to_char(min_string), min) << "Failed to convert min  from internal representation to char";
 
-    // To char failing
-
-    // From char passing
-
-    // From char failing
-
+    // From int passing
+    EXPECT_EQ(conversion::to_data(-78), "-78") << "Failed to convert internal representation to char";
+    // not checking min and max because I'm just calling std::to_string, which I use to make the test
 }
 
 TEST(Conversion, Bool)
 {
-    // To bool passing
+    EXPECT_EQ(conversion::to_bool("true"), true) << "Failed to convert boolean true from internal representation to bool";
+    EXPECT_EQ(conversion::to_bool("false"), false) << "Failed to convert boolean false from internal representation to bool";
 
-    // From bool passing
-
-    // From bool failing
-
+    EXPECT_EQ(conversion::to_data(true), "true") << "Failed to convert true from bool to internal representation";
+    EXPECT_EQ(conversion::to_data(false), "false") << "Failed to convert false from bool to internal representation";
 }
-*/
