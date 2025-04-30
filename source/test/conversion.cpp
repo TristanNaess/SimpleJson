@@ -23,7 +23,7 @@ TEST(Conversion, LongDouble)
 {
     EXPECT_NEAR(conversion::to_ldouble("1836.67e-43"), 1836.67e-43l, std::numeric_limits<long double>::epsilon()) << "Failed to convert internal string to long double";
     EXPECT_THROW(conversion::to_ldouble("\"Foobar\""), json::wrong_type) << "Failed to throw json::wrong_type when called with string data";
-    EXPECT_THROW(conversion::to_ldouble("true"), json::wrong_type) << "Failed to throw json::wrong_type when called with ";
+    EXPECT_THROW(conversion::to_ldouble("true"), json::wrong_type) << "Failed to throw json::wrong_type when called with boolean data";
     // not checking for object or array, since they shouldn't even be considered for conversion
 
     // no checks for conversion to data, since arg is bound checked by data type
@@ -32,17 +32,15 @@ TEST(Conversion, LongDouble)
 TEST(Conversion, Double)
 {
     EXPECT_NEAR(conversion::to_double("617965.3743e13"), 617965.3743e13, std::numeric_limits<double>::epsilon()) << "Failed to convert internal string to double";
-    EXPECT_THROW(conversion::to_double(std::to_string(static_cast<long double>(std::numeric_limits<double>::max()) + 10000)), json::out_of_range) << "Failed to throw json::out_of_range for long double size data in double conversion";
-
+    EXPECT_THROW(conversion::to_double("123.6789456e2000"), json::out_of_range) << "Failed to throw json::out_of_range for data with too large an exponent";
     EXPECT_THROW(conversion::to_double("\"Foobar\""), json::wrong_type) << "Failed to throw json::wrong_type when called with string data";
     EXPECT_THROW(conversion::to_double("true"), json::wrong_type) << "Failed to throw json::wrong_type when called with boolean data";
 } 
 
 TEST(Conversion, Float)
 {
-    EXPECT_NEAR(conversion::to_float("1768435.376e73"), 1768435.376e73, std::numeric_limits<float>::epsilon()) << "Failed to convert internal string to float";
-    EXPECT_THROW(conversion::to_float(std::to_string(static_cast<double>(std::numeric_limits<float>::max()) + 10000)), json::out_of_range) << "Failed to throw json::out_of_range for double sized data in float conversion";
-
+    EXPECT_NEAR(conversion::to_float("8435.376e5"), 8435.376e5, std::numeric_limits<float>::epsilon()) << "Failed to convert internal string to float";
+    EXPECT_THROW(conversion::to_float("123e40"), json::out_of_range) << "Failed to throw json::out_of_range for double sized data in float conversion";
     EXPECT_THROW(conversion::to_float("\"Foobar\""), json::wrong_type) << "Failed to throw json::wrong_type when called with string data";
     EXPECT_THROW(conversion::to_float("true"), json::wrong_type) << "Failed to throw json::wrong_type when called with boolean data";
 

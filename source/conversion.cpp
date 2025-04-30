@@ -1,5 +1,7 @@
 #include "conversion.hpp"
 #include "error.hpp"
+#include <charconv>
+#include <limits>
 
 namespace conversion
 {
@@ -74,62 +76,129 @@ namespace conversion
 
     long double to_ldouble(std::string_view data)
     {
-        throw todo{"TODO: to_ldouble(std::string_view data)"};
+        long double val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{}) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to long double")};
+        throw json::wrong_type{std::string("conversion::to_ldouble() called with wrong data type: ") + std::string(data)};
     }
 
     double to_double(std::string_view data)
     {
-        throw todo{"TODO: to_double(std::string_view data)"};
+        double val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{}) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to double")};
+        throw json::wrong_type{std::string("conversion::to_double() called with wrong data type: ") + std::string(data)};
     }
 
     float to_float(std::string_view data)
     {
-        throw todo{"TODO: to_float(std::string_view data)"};
+        float val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end()) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to float")};
+        throw json::wrong_type{std::string("conversion::to_float() called with wrong data type: ") + std::string(data)};
     }
 
     unsigned long long int to_ullint(std::string_view data)
     {
-        throw todo{"TODO: to_ullint(std::string_view data)"};
+        unsigned long long int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end()) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is too large to convert to unsigned long long int")};
+        throw json::wrong_type{std::string("conversion::to_ullint() called with wrong data type: ") + std::string(data)};
     }
 
     unsigned long int to_ulint(std::string_view data)
     {
-        throw todo{"TODO: to_ulint(std::string_view data)"};
+        unsigned long int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end()) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is too large to convert to unsigned long int")};
+        throw json::wrong_type{std::string("conversion::to_ulint() called with wrong data type: ") + std::string(data)};
     }
 
     unsigned int to_uint(std::string_view data)
     {
-        throw todo{"TODO: to_uint(std::string_view data)"};
+        unsigned long int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end())
+        {
+            if (val > std::numeric_limits<unsigned int>::max()) // downcasting is not safe
+            {
+                throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is too large to convert to unsigned int")};
+            }
+            return static_cast<unsigned int>(val); // safe to downcast
+        }
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is too large to convert to unsigned int")};
+        throw json::wrong_type{std::string("conversion::to_uint() called with wrong data type: ") + std::string(data)};
     }
 
     unsigned char to_uchar(std::string_view data)
     {
-        throw todo{"TODO: to_uchar(std::string_view data)"};
+        unsigned long int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end())
+        {
+            if (val > std::numeric_limits<unsigned char>::max()) // downcasting is not safe
+            {
+                throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is too large to convert to unsigned char")};
+            }
+            return static_cast<unsigned char>(val); // safe to downcast
+        }
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is too large to convert to unsigned char")};
+        throw json::wrong_type{std::string("conversion::to_uchar() called with wrong data type: ") + std::string(data)};
     }
 
     long long int to_llint(std::string_view data)
     {
-        throw todo{"TODO: to_llint(std::string_view data)"};
+        long long int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end()) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to long long int")};
+        throw json::wrong_type{std::string("conversion::to_llint() called with wrong data type: ") + std::string(data)};
     }
 
     long int to_lint(std::string_view data)
     {
-        throw todo{"TODO: to_lint(std::string_view data)"};
+        long int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end()) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to long int")};
+        throw json::wrong_type{std::string("conversion::to_lint() called with wrong data type: ") + std::string(data)};
     }
 
     int to_int(std::string_view data)
     {
-        throw todo{"TODO: to_int(std::string_view data)"};
+        int val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end()) return val;
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to int")};
+        throw json::wrong_type{std::string("conversion::to_int() called with wrong data type: ") + std::string(data)};
     }
 
     char to_char(std::string_view data)
     {
-        throw todo{"TODO: to_char(std::string_view data)"};
+        char val;
+        auto res = std::from_chars(data.begin(), data.end(), val);
+        if (res.ec == std::errc{} && res.ptr == data.end())
+        {
+            if (val > std::numeric_limits<char>::max() || val < std::numeric_limits<char>::min())
+            {
+                throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to unsigned long long int")};
+            }
+            return val;
+        }
+        if (res.ec == std::errc::result_out_of_range) throw json::out_of_range{std::string("value ") + std::string(data) + std::string(" is out of range to convert to unsigned long long int")};
+        throw json::wrong_type{std::string("conversion::to_ullint() called with wrong data type: ") + std::string(data)};
     }
 
     bool to_bool(std::string_view data)
     {
-        return data == "true";
+        if (data == "true") return true;
+        if (data == "false") return false;
+        throw json::wrong_type{std::string("conversion::to_bool() called with wrong data type: ") + std::string(data)};
     }
 
     // conversion from type to json
