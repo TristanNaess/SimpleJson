@@ -1,6 +1,7 @@
 #include "conversion.hpp"
 #include "error.hpp"
 #include <charconv>
+#include <format>
 #include <limits>
 
 namespace conversion
@@ -205,7 +206,40 @@ namespace conversion
 
     std::string to_data(std::string_view line)
     {
-        throw todo{"TODO: to_data(std::string_view line)"};
+        std::string val = "\"";
+        val.reserve(line.size() + 10);
+        for (auto itr = line.begin(); itr != line.end(); itr++)
+        {
+            switch (*itr)
+            {
+                case '"':
+                    val += "\\\"";
+                    break;
+                case '\\':
+                    val += "\\\\";
+                    break;
+                case '\b':
+                    val += "\\b";
+                    break;
+                case '\f':
+                    val += "\\f";
+                    break;
+                case '\n':
+                    val += "\\n";
+                    break;
+                case '\r':
+                    val += "\\r";
+                    break;
+                case '\t':
+                    val += "\\t";
+                    break;
+                default:
+                    val += *itr;
+                    break;
+            }
+        }
+        val += '"';
+        return val;
     }
 
     // because the compiler seems to think this should use the bool version...
@@ -216,57 +250,59 @@ namespace conversion
 
     std::string to_data(long double d)
     {
-        throw todo{"TODO: to_data(long double d)"};
+        return std::format("{}", d);
     }
 
     std::string to_data(double d)
     {
-        throw todo{"TODO: to_data(double d)"};
+        return std::format("{}", d);
     }
 
     std::string to_data(float f)
     {
-        throw todo{"TODO: to_data(float f)"};
+        return std::format("{}", f);
     }
 
     std::string to_data(unsigned long long int i)
     {
-        throw todo{"TODO: to_data(unsigned long long int i)"};
+        return std::format("{}", i);
     }
 
     std::string to_data(unsigned long int i)
     {
-        throw todo{"TODO: to_data(unsigned long int i)"};
+        return std::format("{}", i);
     }
 
     std::string to_data(unsigned int i)
     {
-        throw todo{"TODO: to_data(unsigned int i)"};
+        return std::format("{}", i);
     }
 
     std::string to_data(unsigned char c)
     {
-        throw todo{"TODO: to_data(unsigned char c)"};
+        unsigned int i = c;
+        return std::format("{}", i);
     }
 
     std::string to_data(long long int i)
     {
-        throw todo{"TODO: to_data(long long int i)"};
+        return std::format("{}", i);
     }
 
     std::string to_data(long int i)
     {
-        throw todo{"TODO: to_data(long int i)"};
+        return std::format("{}", i);
     }
 
     std::string to_data(int i)
     {
-        throw todo{"TODO: to_data(int i)"};
+        return std::format("{}", i);
     }
 
     std::string to_data(char c)
     {
-        throw todo{"TODO: to_data(char c)"};
+        int i = c;
+        return std::format("{}", i);
     }
 
     std::string to_data(bool b)
