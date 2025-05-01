@@ -25,7 +25,6 @@ TEST(Json, Constructor)
 
 }
 
-/*
 TEST(Json, ObjectQueries)
 {
     json::json data{ "{\"Field 1\": \"Value 1\", \"Field 2\": -123.45, \"Field 3\": false}" };
@@ -149,7 +148,6 @@ TEST(Accessor, WriteQueries)
     EXPECT_THROW(data["Object"] = "foobar", json::wrong_type) << "Failed to throw correct error when trying to change type while updating";
 }
 
-*/
 
 
 /* -- TO BE ADDED ONCE READ AND WRITE ARE FINISHED --
