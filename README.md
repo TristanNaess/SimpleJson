@@ -25,7 +25,9 @@ After I get this working, I will probably try to furthere optimize runtime vs st
 
 ### Future Additions
 I don't want to replace the string based representation with parsing at request, because of the afore-mentioned project this is based on, but think parsing the active json data into a structure would be more efficient if the same data is accessed multiple times.
-In this case I will probably change the class names to reflect what kind of storage is used, and include a macro to select the version with `-D VERSION_FLAG` if json::json is used
+
+In this case I will probably change the class names to reflect what kind of storage is used, and include a macro to select the version with `-D VERSION_FLAG` if json::json is used.
+
 If possible I'd like to be able to use move constructors to serialize and deserialize the data to/from a record type that can be stored more efficiently, at the cost of parsing at construction
 
 ## Syntax
