@@ -33,6 +33,11 @@ bool operator==(const mut_view& lhs, const mut_view& rhs)
     return lhs.data == rhs.data && lhs.begin == rhs.begin && lhs.end == rhs.end;
 }
 
+bool operator==(const mut_view& lhs, const char* rhs)
+{
+    return std::string(lhs.begin, lhs.end) == std::string(rhs);
+}
+
 // ------------------------------------
 //  Data Extraction
 // ------------------------------------
@@ -153,9 +158,10 @@ std::string::iterator seek(mut_view data, char c, std::string::iterator start) n
 
 mut_view next_field(mut_view data, std::string::iterator start) noexcept
 {
-    if (start == data.end) return mut_view(data.data, data.end, data.end);
     start++;
+    if (start >= data.end-1) return mut_view(data.data, data.end, data.end);
     std::string::iterator end = seek(data, ',', start);
+    if (end == data.data.end()) end--;
     return mut_view(data.data, start, end);
 }
 

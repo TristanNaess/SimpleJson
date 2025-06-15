@@ -1,4 +1,5 @@
 #include "json.hpp"
+#include "verification.hpp"
 
 namespace json
 {
@@ -26,7 +27,7 @@ namespace json
     json::json(std::string_view data)
     {
         m_data = remove_whitespace(data);
-        //if (!verify_json(data)) throw parsing_error("Error verifying json data"); TODO: not yet added
+        if (!verify_json(m_data)) throw parsing_error("Error verifying json data");
         
         if (m_data[0] == '{') m_type = Type::Object;
         else m_type = Type::Array;
@@ -34,7 +35,6 @@ namespace json
 
     std::vector<std::string> json::keys() // json::wrong_type
     {
-        //throw todo{"TODO: json::keys()"};
         if (m_type != Type::Object) throw wrong_type("Cannot get keys from array type json");
         std::vector<std::string> keys;
         mut_view data(m_data, m_data.begin(), m_data.end());
@@ -49,12 +49,26 @@ namespace json
 
     bool json::contains(std::string_view key) // json::wrong_type
     {
-        throw todo{"TODO: json::contains(std::string_view)"};
+        if (m_type != Type::Object) throw wrong_type("Cannot check keys from array type json");
+        mut_view data(m_data, m_data.begin(), m_data.end());
+        mut_view field(m_data, m_data.begin(), m_data.begin());
+        while ((field = next_field(data, field.end)) != mut_view(m_data, m_data.end(), m_data.end()))
+        {
+            if (conversion::to_string(get_key(field)) == key) return true;
+        }
+        return false;
     }
 
     std::size_t json::size()
     {
-        throw todo{"TODO: json::size()"};
+        std::size_t size = 0;
+        mut_view data(m_data, m_data.begin(), m_data.end());
+        mut_view field(m_data, m_data.begin(), m_data.begin());
+        while ((field = next_field(data, field.end)) != mut_view(m_data, m_data.end(), m_data.end()))
+        {
+            size++;
+        }
+        return size;
     }
 
     Type json::type() noexcept
@@ -64,7 +78,15 @@ namespace json
 
     accessor json::operator[](std::string_view key) // json::wrong_type, json::out_of_range
     {
-        throw todo{"TODO: json::operator[](std::string_view)"};
+        if (m_type != Type::Object) throw wrong_type("Cannot check keys from array type json");
+
+        mut_view data(m_data, m_data.begin(), m_data.end());
+        mut_view field(m_data, m_data.begin(), m_data.begin());
+        while ((field = next_field(data, field.end)) != mut_view(m_data, m_data.end(), m_data.end()))
+        {
+            if (conversion::to_string(get_key(field)) == key) return accessor(get_val(field));
+        }
+        throw out_of_range("No field with key: ");
     }
 
     accessor json::operator[](const char* key) // json::wrong_type, json::out_of_range

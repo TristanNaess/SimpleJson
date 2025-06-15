@@ -38,21 +38,28 @@ TEST(Json, ObjectQueries)
 
     EXPECT_EQ(keys, expected) << "Returned keys did not match expected";
 
+    EXPECT_THROW(array.contains("Field 1"), json::wrong_type) << "Failed to throw when checking a key in an array";
     EXPECT_TRUE(data.contains(std::string("Field 1"))) << "Did not return true for known key";
     EXPECT_TRUE(data.contains("Field 2")) << "Did not return true for known key (c-str)";
 
     // could check std::string version, but it will probably be called by the c-str version anyway
     EXPECT_FALSE(data.contains("Bad key")) << "Returned true for non-existant key";
+
+    EXPECT_EQ(data.size(), 3) << "Failed to return size of json object";
+
+    // empty case
+    json::json empty{ "{}" };
+
+    EXPECT_EQ(empty.keys(), std::vector<std::string>{}) << "Failed to return empty vector for empty data";
+    EXPECT_FALSE(empty.contains("No keys")) << "Returned true for queried key in empty object";
 }
 
 TEST(Json, ArrayQueries)
 {
     json::json data{ "[1, 2, 3, 4, 5]" };
-    json::json object{ "{\"Foo\": \"Bar\"}" };
 
     EXPECT_EQ(data.size(), 5) << "Returned incorrect size from json array";
 
-    EXPECT_THROW(object.size(), json::wrong_type) << "Failed to throw when querying size from object";
 }
 
 // json::operator[] checked by accessor tests

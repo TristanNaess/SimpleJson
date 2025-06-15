@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <vector>
 #include "parsing.hpp"
 
 // not included in header
@@ -72,6 +73,40 @@ TEST(Public, Seek)
 
 TEST(Public, NextField)
 {
-    std::string data = R"({"name":["John","","Smith],"id":7928113,"department":"mensware","availability":{"sunday":[8,1730],"monday":[null,null],"tuesday":[null,null],"wednesday":[8,1730],"thursday":[8,1730],"friday":[8,1200],"saturday":[1200,1730]}})";
+    std::string line = R"({"name":["John","","Smith"],"id":7928113,"department":"mensware","availability":{"sunday":[8,1730],"monday":[null,null],"tuesday":[null,null],"wednesday":[8,1730],"thursday":[8,1730],"friday":[8,1200],"saturday":[1200,1730]}})";
+
+    mut_view data(line, line.begin(), line.end());
+    mut_view field(line, data.begin, data.begin);
+    EXPECT_EQ(field = next_field(data, field.end), R"("name":["John","","Smith"])") << "Failed to extract field";
+    EXPECT_EQ(field = next_field(data, field.end), R"("id":7928113)") << "Failed to extract field";
+    EXPECT_EQ(field = next_field(data, field.end), R"("department":"mensware")") << "Failed to extract field";
+    EXPECT_EQ(field = next_field(data, field.end), R"("availability":{"sunday":[8,1730],"monday":[null,null],"tuesday":[null,null],"wednesday":[8,1730],"thursday":[8,1730],"friday":[8,1200],"saturday":[1200,1730]})") << "Failed to extract field";
+
+    EXPECT_EQ(data = next_field(data, field.end), mut_view(line, line.end(), line.end())) << "Failed to return npos equivalent";
+
+    // empty object case
+    std::string empty = "{}";
+    data = mut_view(empty, empty.begin(), empty.end());
+    field = mut_view(empty, data.begin, data.begin);
+    EXPECT_EQ(field = next_field(data, field.end), mut_view(empty, empty.end(), empty.end())) << "Failed to return npos equivalent when called on empty object";
 }
 
+TEST(Public, GetKey)
+{
+
+}
+
+TEST(Public, GetVal)
+{
+
+}
+
+TEST(Public, DeleteField)
+{
+
+}
+
+TEST(Public, ChangeField)
+{
+
+}
